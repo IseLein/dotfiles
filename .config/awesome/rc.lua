@@ -47,6 +47,14 @@ end
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
+beautiful.font = "JetBrainsMono Nerd Font Mono 10"
+beautiful.bg_normal = "#1e1e2e"
+beautiful.bg_focus = "#a6e3a1"
+-- beautiful.fg_normal = "#f5e0dc"
+beautiful.fg_focus = "#a6e3a1"
+beautiful.border_focus = "#a6e3a1"
+beautiful.border_normal = "#11111b"
+beautiful.border_width = 1
 
 -- This is used later as the default terminal and editor to run.
 terminal = "wezterm"
@@ -109,6 +117,7 @@ mykeyboardlayout = awful.widget.keyboardlayout()
 -- {{{ Wibar
 -- Create a textclock widget
 mytextclock = wibox.widget.textclock()
+mytextclock.bg = "#1e1e2e"
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
@@ -186,35 +195,160 @@ awful.screen.connect_for_each_screen(function(s)
     s.mytaglist = awful.widget.taglist {
         screen  = s,
         filter  = awful.widget.taglist.filter.all,
-        buttons = taglist_buttons
+        buttons = taglist_buttons,
+	layout = {
+	    spacing = 1,
+	    spacing_widget = {
+		{
+		    forced_height = 20,
+		    forced_width = 1,
+		    color = "#cdd6f4",
+		    widget = wibox.widget.separator,
+		},
+		valign = "center",
+		halign = "center",
+		widget = wibox.container.place,
+	    },
+	    layout = wibox.layout.fixed.horizontal,
+	},
+	widget_template = {
+	    {
+	        id = "text_role",
+	        widget = wibox.widget.textbox,
+    	    },
+	    left = 5,
+	    right = 5,
+	    widget = wibox.container.margin,
+	    create_callback =function(self, c3, index, objects)
+		self:get_children_by_id("text_role")[1].markup = "<b> " ..index.." </b>"
+	    end,
+	    update_callback =function(self, c3, index, objects)
+		self:get_children_by_id("text_role")[1].markup = "<b> " ..index.." </b>"
+	    end,
+	},
     }
 
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist {
         screen  = s,
         filter  = awful.widget.tasklist.filter.currenttags,
-        buttons = tasklist_buttons
+        buttons = tasklist_buttons,
+	layout = {
+	    spacing_widget = {
+		{
+                    forced_height = 24,
+		    forced_width = 5,
+		    thickness = 1,
+		    color = "#cba6f7",
+		    widget = wibox.widget.separator,
+	        },
+		valign = "center",
+		halign = "center",
+		widget = wibox.container.place,
+	    },
+	    spacing = 1,
+	    layout = wibox.layout.fixed.horizontal,
+	},
+	widget_template = {
+	    {
+		{
+		    wibox.widget.base.make_widget(),
+		    forced_height = 3,
+		    id = "background_role",
+		    widget = wibox.container.background,
+		},
+		left = 4,
+		right = 4,
+		layout = wibox.container.margin,
+	    },
+	    {
+		{
+		    id = "clienticon",
+		    widget = awful.widget.clienticon,
+		},
+		top = 3,
+		left = 3,
+		widget = wibox.container.margin,
+	    },
+	    nil,
+	    create_callback = function(self, c, index, objects)
+		self:get_children_by_id("clienticon")[1].client = c
+	    end,
+	    layout = wibox.layout.align.vertical,
+	},
     }
 
+    -- logo
+    mytextlogo = wibox.widget.textbox()
+    -- mytextlogo.text = ""
+    -- mytextlogo.font = "18"
+    mytextlogo:set_markup("<span foreground='#f38ba8' font='18'></span>")
+    padded_logo = wibox.container.margin(mytextlogo, 14, 20, 0, 0)
+    bg_logo = wibox.container.background(padded_logo, "#1e1e2e")
+
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s })
+    s.mywibox = awful.wibar({
+	position = "top",
+	screen = s,
+	height = 40,
+	input_passthrough = true,
+	bg = "#00000000",
+    })
 
     -- Add widgets to the wibox
     s.mywibox:setup {
         layout = wibox.layout.align.horizontal,
-        { -- Left widgets
+        {-- Left widgets
+	    {
+	        {
+                    layout = wibox.layout.fixed.horizontal,
+	    	    bg_logo,
+	    	    {
+			{
+	                    s.mytaglist,
+			    right = 12,
+			    widget = wibox.container.margin,
+			},
+			bg = "#1e1e2e",
+	    	        widget = wibox.container.background,
+	    	    },
+                    s.mypromptbox,
+    	        },
+	        shape = gears.shape.rounded_bar,
+	        shape_border_width = 2,
+	        shape_border_color = "#cba6f7",
+	        shape_clip = true,
+	        widget = wibox.container.background,
+            },
+	    left = 6,
+	    right = 0,
+	    top = 6,
+	    bottom = 0,
+	    border_width = 1,
+	    border_color = "#ffffff",
+	    widget = wibox.container.margin,
+	},
+        -- s.mytasklist, -- Middle widget
+	{
+	    {
+	        layout = wibox.layout.align.horizontal,
+		expand = "outside",
+	        wibox.widget.textbox(),
+		s.mytasklist,
+	        wibox.widget.textbox(),
+	    },
+	    left = 0,
+	    right = 0,
+	    top = 6,
+	    bottom = 0,
+	    widget = wibox.container.margin,
+	},
+	{ -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            mylauncher,
-            s.mytaglist,
-            s.mypromptbox,
-        },
-        s.mytasklist, -- Middle widget
-        { -- Right widgets
-            layout = wibox.layout.fixed.horizontal,
-            mykeyboardlayout,
+            -- mykeyboardlayout,
             wibox.widget.systray(),
             mytextclock,
-            s.mylayoutbox,
+            -- s.mylayoutbox,
         },
     }
 end)
@@ -251,8 +385,8 @@ globalkeys = gears.table.join(
         end,
         {description = "focus previous by index", group = "client"}
     ),
-    awful.key({ modkey,           }, "w", function () mymainmenu:show() end,
-              {description = "show main menu", group = "awesome"}),
+    -- awful.key({ modkey,           }, "w", function () mymainmenu:show() end,
+    --           {description = "show main menu", group = "awesome"}),
 
     -- Layout manipulation
     awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end,
@@ -313,9 +447,14 @@ globalkeys = gears.table.join(
 
     -- Dmenu
     awful.key({ modkey },            "space",     function ()
-	awful.util.spawn("dmenu_run")
+	awful.util.spawn("rofi -show drun")
     end,
-              {description = "launch dmenu", group = "iselein"}),
+              {description = "rofi - app launcher", group = "rofi"}),
+
+    awful.key({ modkey,           }, "w", function ()
+	awful.util.spawn("rofi -show window")
+    end,
+              {description = "rofi - window launcher", group = "rofi"}),
 
     awful.key({ modkey }, "x",
               function ()
