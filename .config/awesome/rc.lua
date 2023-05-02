@@ -49,12 +49,15 @@ end
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 beautiful.font = "JetBrainsMono Nerd Font Mono 10"
 beautiful.bg_normal = "#1e1e2e"
-beautiful.bg_focus = "#a6e3a1"
+-- beautiful.bg_focus = "#a6e3a1"
+beautiful.bg_focus = "#eba0ac"
 -- beautiful.fg_normal = "#f5e0dc"
 beautiful.fg_focus = "#a6e3a1"
-beautiful.border_focus = "#a6e3a1"
+beautiful.border_focus = "#eba0ac"
+-- beautiful.border_focus = "#a6e3a1"
 beautiful.border_normal = "#11111b"
 beautiful.border_width = 1
+beautiful.layoutbox_fg_normal = "#f38ba8"
 
 -- This is used later as the default terminal and editor to run.
 terminal = "wezterm"
@@ -200,7 +203,7 @@ awful.screen.connect_for_each_screen(function(s)
 	    spacing = 1,
 	    spacing_widget = {
 		{
-		    forced_height = 20,
+		    forced_height = 16,
 		    forced_width = 1,
 		    color = "#cdd6f4",
 		    widget = wibox.widget.separator,
@@ -216,8 +219,8 @@ awful.screen.connect_for_each_screen(function(s)
 	        id = "text_role",
 	        widget = wibox.widget.textbox,
     	    },
-	    left = 5,
-	    right = 5,
+	    left = 8,
+	    right = 8,
 	    widget = wibox.container.margin,
 	    create_callback =function(self, c3, index, objects)
 		self:get_children_by_id("text_role")[1].markup = "<b> " ..index.." </b>"
@@ -236,10 +239,10 @@ awful.screen.connect_for_each_screen(function(s)
 	layout = {
 	    spacing_widget = {
 		{
-                    forced_height = 24,
+                    forced_height = 16,
 		    forced_width = 5,
 		    thickness = 1,
-		    color = "#cba6f7",
+		    color = "#cdd6f4",
 		    widget = wibox.widget.separator,
 	        },
 		valign = "center",
@@ -252,23 +255,34 @@ awful.screen.connect_for_each_screen(function(s)
 	widget_template = {
 	    {
 		{
-		    wibox.widget.base.make_widget(),
-		    forced_height = 3,
-		    id = "background_role",
-		    widget = wibox.container.background,
+	            {
+	                wibox.widget.base.make_widget(),
+	                forced_height = 2,
+	                id = "background_role",
+	                widget = wibox.container.background,
+	            },
+		    top = 3,
+	            left = 9,
+	            right = 10,
+	            layout = wibox.container.margin,
 		},
-		left = 4,
-		right = 4,
-		layout = wibox.container.margin,
+		bg = "#1e1e2e00",
+		widget = wibox.container.background,
 	    },
 	    {
 		{
-		    id = "clienticon",
-		    widget = awful.widget.clienticon,
+	            {
+	                id = "clienticon",
+	                widget = awful.widget.clienticon,
+	            },
+	            top = 3,
+	            left = 8,
+		    right = 4,
+		    bottom = 4,
+	            widget = wibox.container.margin,
 		},
-		top = 3,
-		left = 3,
-		widget = wibox.container.margin,
+		bg = "#1e1e2e00",
+		widget = wibox.container.background,
 	    },
 	    nil,
 	    create_callback = function(self, c, index, objects)
@@ -284,13 +298,184 @@ awful.screen.connect_for_each_screen(function(s)
     -- mytextlogo.font = "18"
     mytextlogo:set_markup("<span foreground='#f38ba8' font='18'></span>")
     padded_logo = wibox.container.margin(mytextlogo, 14, 20, 0, 0)
-    bg_logo = wibox.container.background(padded_logo, "#1e1e2e")
+    bg_logo = wibox.container.background(padded_logo, "#1e1e2ebf")
+
+    -- textclock
+    month_calendar = awful.widget.calendar_popup.month({
+	margin = 8,
+	opacity = 0.95,
+	start_sundays = true,
+	style_normal = {
+	    border_width = 0,
+	},
+	style_focus = {
+	    border_width = 0,
+	    bg_color = "#89b4fa",
+	    fg_color = "#1e1e2e",
+	},
+	style_weekday = {
+	    border_width = 0,
+	},
+	style_header = {
+	    border_width = 0,
+	},
+    })
+    month_calendar:attach(mytextclock, "tr")
+    textclock_widget = {
+	{
+	    {
+	        mytextclock,
+		left = 4,
+		right = 4,
+		widget = wibox.container.margin,
+	    },
+	    bg = "#45475a",
+	    fg = "#89b4fa",
+	    shape = gears.shape.rounded_bar,
+	    widget = wibox.container.background,
+	},
+	top = 7,
+	right = 6,
+	bottom = 7,
+	widget = wibox.container.margin,
+    }
+
+
+    middle = wibox.widget {
+	{
+	    layout = wibox.layout.align.horizontal,
+	    expand = "outside",
+	    wibox.widget.textbox(),
+	    {
+		    {
+		        {
+		            {
+	        	        s.mytasklist,
+		                left = 12,
+		                right = 12,
+		                widget = wibox.container.margin,
+		            },
+		            bg = "#1e1e2ebf",
+		            widget = wibox.container.background,
+		        },
+		        shape = gears.shape.rounded_bar,
+		        shape_border_width = 2,
+		        shape_border_color = "#cba6f7",
+		        shape_clip = true,
+		        widget = wibox.container.background,
+		    },
+		    left = 1,
+		    right = 1,
+		    border_width = 1,
+		    border_color = "#cba6f7",
+		    widget = wibox.container.margin,
+	    },
+	    wibox.widget.textbox(),
+	},
+	left = 0,
+	right = 0,
+	top = 3,
+	bottom = 0,
+	widget = wibox.container.margin,
+    }
+
+    s.mytasklist:connect_signal("property::count", function()
+	middle.visible = s.mytasklist.count > 0
+    end)
+
+    -- if s.mytasklist.task_count == 0 then
+	-- middle = wibox.widget.textbox
+    -- naughty.notify({ preset = naughty.config.presets.critical,
+    --                  title = "Oops, there were errors during startup!"..s.mytasklist.count,
+    --                  text = awesome.startup_errors })
+    -- end
+    -- naughty.notify({ preset = naughty.config.presets.critical,
+    --                  title = "Oops, there were errors during startup!",
+    --                  text = awesome.startup_errors })
+
+    battery_text = wibox.widget {
+	align = "center",
+	valign = "center",
+	widget = wibox.widget.textbox,
+    }
+    battery_icon = wibox.widget {
+	align = "center",
+	valign = "center",
+	font = "26",
+	widget = wibox.widget.textbox,
+    }
+    battery_charge_status = wibox.widget {
+	markup = "<b> ⚡</b>",
+	widget = wibox.widget.textbox,
+    }
+    battery_widget = wibox.widget {
+	{
+	    {
+	        layout = wibox.layout.fixed.horizontal,
+	        battery_icon,
+		{
+		    battery_charge_status,
+		    fg = "#fab387",
+		    widget = wibox.container.background,
+		},
+	        battery_text,
+	    },
+	    left = 8,
+	    right = 8,
+	    widget = wibox.container.margin,
+	},
+	-- fg = "#f38ba8",
+	bg = "#45475a",
+	shape = gears.shape.rounded_bar,
+	widget = wibox.container.background,
+    }
+    battery_container_widget = {
+	battery_widget,
+	top = 7,
+	left = 6,
+	bottom = 7,
+	widget = wibox.container.margin,
+    }
+
+    update_battery_capacity = function(capacity)
+	battery_icon.text = ""
+	if capacity >= 80 then
+	    battery_icon.text = ""
+	    if battery_widget.fg ~= "#a6e3a1" then
+		battery_widget.fg = "#a6e3a1"
+	    end
+    	elseif capacity >= 60 then
+	    battery_icon.text = ""
+	    if battery_widget.fg ~= "#a6e3a1" then
+		battery_widget.fg = "#a6e3a1"
+	    end
+    	elseif capacity >= 40 then
+	    battery_icon.text = ""
+	    if battery_widget.fg ~= "#f38ba8" then
+		battery_widget.fg = "#f38ba8"
+	    end
+	end
+	battery_text.text = " "..capacity.."%"
+    end
+
+    update_battery_status = function(isDischarging)
+	battery_charge_status.visible = not isDischarging
+    end
+
+    awful.widget.watch('bash -c "cat /sys/class/power_supply/BAT0/capacity"', 60, function(self, stdout)
+	capacity = tonumber(stdout)
+	update_battery_capacity(capacity)
+    end)
+
+    awful.widget.watch('bash -c "cat /sys/class/power_supply/BAT0/status"', 1, function(self, stdout)
+	update_battery_status(string.sub(stdout, 1, 1) == "D")
+    end)
 
     -- Create the wibox
     s.mywibox = awful.wibar({
 	position = "top",
 	screen = s,
-	height = 40,
+	height = 34,
 	input_passthrough = true,
 	bg = "#00000000",
     })
@@ -309,7 +494,7 @@ awful.screen.connect_for_each_screen(function(s)
 			    right = 12,
 			    widget = wibox.container.margin,
 			},
-			bg = "#1e1e2e",
+			bg = "#1e1e2ebf",
 	    	        widget = wibox.container.background,
 	    	    },
                     s.mypromptbox,
@@ -322,33 +507,51 @@ awful.screen.connect_for_each_screen(function(s)
             },
 	    left = 6,
 	    right = 0,
-	    top = 6,
+	    top = 3,
 	    bottom = 0,
 	    border_width = 1,
-	    border_color = "#ffffff",
+	    border_color = "#cba6f7",
 	    widget = wibox.container.margin,
 	},
         -- s.mytasklist, -- Middle widget
-	{
-	    {
-	        layout = wibox.layout.align.horizontal,
-		expand = "outside",
-	        wibox.widget.textbox(),
-		s.mytasklist,
-	        wibox.widget.textbox(),
-	    },
-	    left = 0,
-	    right = 0,
-	    top = 6,
-	    bottom = 0,
-	    widget = wibox.container.margin,
-	},
+	middle,
 	{ -- Right widgets
-            layout = wibox.layout.fixed.horizontal,
-            -- mykeyboardlayout,
-            wibox.widget.systray(),
-            mytextclock,
-            -- s.mylayoutbox,
+	    {
+		{
+                    {
+                        layout = wibox.layout.fixed.horizontal,
+			battery_container_widget,
+                        mykeyboardlayout,
+                        wibox.widget.systray(),
+			textclock_widget,
+			{
+			    {
+				wibox.widget.textbox(" "),
+			    	fg = "#f38ba8",
+			        widget = wibox.container.background,
+			    },
+			    right = 10,
+			    top = 6,
+			    bottom = 6,
+			    widget = wibox.container.margin,
+			},
+	            },
+		    bg = "#1e1e2ebf",
+		    widget = wibox.container.background,
+		},
+		shape = gears.shape.rounded_bar,
+		shape_border_width = 2,
+		shape_clip = true,
+		shape_border_color = "#cba6f7",
+		widget = wibox.container.background,
+    	    },
+	    left = 0,
+	    right = 6,
+	    top = 3,
+	    bottom = 0,
+	    border_width = 1,
+	    border_color = "#cba6f7",
+	    widget = wibox.container.margin,
         },
     }
 end)
@@ -703,6 +906,13 @@ end)
 
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+
+-- Rounded windows
+client.connect_signal("manage", function(c)
+    c.shape = function(cr,w,h)
+	gears.shape.rounded_rect(cr,w,h,8)
+    end
+end)
 -- }}}
 
 -- Gaps
@@ -710,4 +920,4 @@ beautiful.useless_gap = 5
 
 -- Autostart
 awful.spawn.with_shell("picom")
-awful.spawn.with_shell("nitrogen --set-zoom-fill --random ~/dotfiles/wallpapers")
+awful.spawn.with_shell("feh --bg-fill --randomize ~/dotfiles/wallpapers/*")

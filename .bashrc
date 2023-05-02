@@ -8,7 +8,7 @@
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias ll='ls -al'
-alias wall='nitrogen --set-zoom-fill --random ~/dotfiles/wallpapers'
+alias wall='feh --bg-fill --randomize ~/dotfiles/wallpapers/*'
 PS1='[\u@\h \W]\$ '
 
 # oh my posh theme
