@@ -47,7 +47,7 @@ end
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
-beautiful.font = "JetBrainsMono Nerd Font Mono 10"
+beautiful.font = "JetBrainsMono Nerd Font Mono 12"
 beautiful.bg_normal = "#1e1e2e"
 -- beautiful.bg_focus = "#a6e3a1"
 beautiful.bg_focus = "#eba0ac"
@@ -261,9 +261,9 @@ awful.screen.connect_for_each_screen(function(s)
 	                id = "background_role",
 	                widget = wibox.container.background,
 	            },
-		    top = 3,
+		    top = 5,
 	            left = 9,
-	            right = 10,
+	            right = 12,
 	            layout = wibox.container.margin,
 		},
 		bg = "#1e1e2e00",
@@ -278,7 +278,7 @@ awful.screen.connect_for_each_screen(function(s)
 	            top = 3,
 	            left = 8,
 		    right = 4,
-		    bottom = 4,
+		    bottom = 6,
 	            widget = wibox.container.margin,
 		},
 		bg = "#1e1e2e00",
@@ -296,7 +296,7 @@ awful.screen.connect_for_each_screen(function(s)
     mytextlogo = wibox.widget.textbox()
     -- mytextlogo.text = ""
     -- mytextlogo.font = "18"
-    mytextlogo:set_markup("<span foreground='#f38ba8' font='18'></span>")
+    mytextlogo:set_markup("<span foreground='#f38ba8' font='26'></span>")
     padded_logo = wibox.container.margin(mytextlogo, 14, 20, 0, 0)
     bg_logo = wibox.container.background(padded_logo, "#1e1e2ebf")
 
@@ -401,11 +401,11 @@ awful.screen.connect_for_each_screen(function(s)
     battery_icon = wibox.widget {
 	align = "center",
 	valign = "center",
-	font = "26",
+	font = "12",
 	widget = wibox.widget.textbox,
     }
     battery_charge_status = wibox.widget {
-	markup = "<b> ⚡</b>",
+	text = " ⚡",
 	widget = wibox.widget.textbox,
     }
     battery_widget = wibox.widget {
@@ -438,19 +438,19 @@ awful.screen.connect_for_each_screen(function(s)
     }
 
     update_battery_capacity = function(capacity)
-	battery_icon.text = ""
+	battery_icon.text = " "
 	if capacity >= 80 then
-	    battery_icon.text = ""
+	    battery_icon.text = " "
 	    if battery_widget.fg ~= "#a6e3a1" then
 		battery_widget.fg = "#a6e3a1"
 	    end
     	elseif capacity >= 60 then
-	    battery_icon.text = ""
+	    battery_icon.text = " "
 	    if battery_widget.fg ~= "#a6e3a1" then
 		battery_widget.fg = "#a6e3a1"
 	    end
     	elseif capacity >= 40 then
-	    battery_icon.text = ""
+	    battery_icon.text = " "
 	    if battery_widget.fg ~= "#f38ba8" then
 		battery_widget.fg = "#f38ba8"
 	    end
@@ -475,7 +475,7 @@ awful.screen.connect_for_each_screen(function(s)
     s.mywibox = awful.wibar({
 	position = "top",
 	screen = s,
-	height = 34,
+	height = 40,
 	input_passthrough = true,
 	bg = "#00000000",
     })

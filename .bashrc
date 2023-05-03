@@ -9,6 +9,7 @@ alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias ll='ls -al'
 alias wall='feh --bg-fill --randomize ~/dotfiles/wallpapers/*'
+alias eb='exec bash'
 PS1='[\u@\h \W]\$ '
 
 # oh my posh theme
