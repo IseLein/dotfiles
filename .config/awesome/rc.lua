@@ -60,6 +60,14 @@ beautiful.border_width = 1
 beautiful.layoutbox_fg_normal = "#f38ba8"
 beautiful.bg_systray = "#45475a"
 beautiful.systray_icon_spacing = 4
+beautiful.notification_shape = gears.shape.rounded_rect
+beautiful.notification_opacity = 0.9
+beautiful.notification_border_color = "#1e1e2e00"
+beautiful.notification_fg = "#ffffff"
+beautiful.notification_bg = "#45475a"
+beautiful.notification_max_width = 500
+beautiful.notification_icon_size = 84
+beautiful.notification_margin = 20
 
 -- This is used later as the default terminal and editor to run.
 terminal = "wezterm"
