@@ -58,6 +58,8 @@ beautiful.border_focus = "#eba0ac"
 beautiful.border_normal = "#11111b"
 beautiful.border_width = 1
 beautiful.layoutbox_fg_normal = "#f38ba8"
+beautiful.bg_systray = "#45475a"
+beautiful.systray_icon_spacing = 4
 
 -- This is used later as the default terminal and editor to run.
 terminal = "wezterm"
@@ -471,6 +473,26 @@ awful.screen.connect_for_each_screen(function(s)
 	update_battery_status(string.sub(stdout, 1, 1) == "D")
     end)
 
+    systray_widget = {
+	{
+	    {
+	        wibox.widget.systray(),
+		left = 6,
+		right = 6,
+		top = 3,
+		bottom = 3,
+		widget = wibox.container.margin,
+	    },
+	    bg = "#45475a",
+	    shape = gears.shape.rounded_bar,
+	    widget = wibox.container.background,
+	},
+	top = 7,
+	bottom = 7,
+	left = 12,
+	widget = wibox.container.margin
+    }
+
     -- Create the wibox
     s.mywibox = awful.wibar({
 	position = "top",
@@ -520,9 +542,9 @@ awful.screen.connect_for_each_screen(function(s)
 		{
                     {
                         layout = wibox.layout.fixed.horizontal,
+			systray_widget,
 			battery_container_widget,
                         mykeyboardlayout,
-                        wibox.widget.systray(),
 			textclock_widget,
 			{
 			    {
@@ -899,11 +921,6 @@ end)
 --     }
 -- end)
 
--- Enable sloppy focus, so that focus follows mouse.
--- client.connect_signal("mouse::enter", function(c)
---    c:emit_signal("request::activate", "mouse_enter", {raise = false})
---end)
-
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 
@@ -921,3 +938,4 @@ beautiful.useless_gap = 5
 -- Autostart
 awful.spawn.with_shell("picom")
 awful.spawn.with_shell("feh --bg-fill --randomize ~/dotfiles/wallpapers/*")
+awful.spawn.with_shell("nm-applet")

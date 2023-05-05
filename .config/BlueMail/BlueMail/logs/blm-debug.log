@@ -1,0 +1,16 @@
+5/4/2023, 4:06:35 PM :: Main thread initialized 
+5/4/2023, 4:06:35 PM :: Getting system flags 
+5/4/2023, 4:06:35 PM :: isLinux true 
+5/4/2023, 4:06:35 PM :: isMac false 
+5/4/2023, 4:06:35 PM :: isWindows false 
+5/4/2023, 4:06:35 PM :: isWindowsExeBuild false 
+5/4/2023, 4:06:35 PM :: isWindowsStoreBuild false 
+5/4/2023, 4:06:35 PM :: Retrieving process agrs 
+5/4/2023, 4:06:35 PM :: #0: || /opt/bluemail/bluemail || type: string -- /opt/bluemail/bluemail 
+5/4/2023, 4:06:35 PM :: Retrieving LoginItemSettings 
+5/4/2023, 4:06:35 PM :: {"openAtLogin":false,"openAsHidden":false,"restoreState":false,"wasOpenedAtLogin":false,"wasOpenedAsHidden":false} 
+5/4/2023, 4:06:35 PM :: APP child-process-gone, uptimeSeconds: 0, exitCode: 159, reason: crashed, type: GPU, serviceName: GPU, name: na 
+5/4/2023, 4:06:35 PM :: APP child-process-gone, uptimeSeconds: 0, exitCode: 159, reason: crashed, type: GPU, serviceName: GPU, name: na 
+5/4/2023, 4:06:35 PM :: APP child-process-gone, uptimeSeconds: 0, exitCode: 159, reason: crashed, type: GPU, serviceName: GPU, name: na 
+5/4/2023, 4:06:35 PM :: APP child-process-gone, uptimeSeconds: 0, exitCode: 159, reason: crashed, type: GPU, serviceName: GPU, name: na 
+5/4/2023, 4:06:35 PM :: APP child-process-gone, uptimeSeconds: 0, exitCode: 159, reason: crashed, type: GPU, serviceName: GPU, name: na 
