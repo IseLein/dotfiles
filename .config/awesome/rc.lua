@@ -19,6 +19,8 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 
+local vicious = require("vicious")
+
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -388,20 +390,39 @@ awful.screen.connect_for_each_screen(function(s)
 	bottom = 0,
 	widget = wibox.container.margin,
     }
+    middle.visible = false
 
-    s.mytasklist:connect_signal("property::count", function()
-	middle.visible = s.mytasklist.count > 0
+    local update_middlebar = function()
+        local client_count = 0
+        for _, c in ipairs(client.get()) do
+            if awful.widget.tasklist.filter.currenttags(c, s) then
+                client_count = client_count + 1
+            end
+        end
+
+        if client_count == 0 then
+            middle.visible = false
+        else
+            middle.visible = true
+        end
+    end
+
+    tag.connect_signal("property::selected", update_middlebar)
+    tag.connect_signal("property::activated", update_middlebar)
+    client.connect_signal("list", update_middlebar)
+    client.connect_signal("property::sticky", update_middlebar)
+    client.connect_signal("property::skip_taskbar", update_middlebar)
+    client.connect_signal("property::hidden", update_middlebar)
+    client.connect_signal("tagged", update_middlebar)
+    client.connect_signal("untagged", update_middlebar)
+    client.connect_signal("list", update_middlebar)
+
+    s.mytasklist:connect_signal("property::count", function(new_val)
+        -- naughty.notify({ preset = naughty.config.presets.critical,
+        --                  title = "Oops, there were errors during startup!"..tostring(new_val),
+        --                  text = awesome.startup_errors })
+	s.mytasklist.visible = false
     end)
-
-    -- if s.mytasklist.task_count == 0 then
-	-- middle = wibox.widget.textbox
-    -- naughty.notify({ preset = naughty.config.presets.critical,
-    --                  title = "Oops, there were errors during startup!"..s.mytasklist.count,
-    --                  text = awesome.startup_errors })
-    -- end
-    -- naughty.notify({ preset = naughty.config.presets.critical,
-    --                  title = "Oops, there were errors during startup!",
-    --                  text = awesome.startup_errors })
 
     battery_text = wibox.widget {
 	align = "center",
@@ -449,6 +470,9 @@ awful.screen.connect_for_each_screen(function(s)
 
     update_battery_capacity = function(capacity)
 	battery_icon.text = " "
+	if battery_widget.fg ~= "#f38ba8" then
+	    battery_widget.fg = "#f38ba8"
+	end
 	if capacity >= 80 then
 	    battery_icon.text = " "
 	    if battery_widget.fg ~= "#a6e3a1" then
@@ -461,8 +485,8 @@ awful.screen.connect_for_each_screen(function(s)
 	    end
     	elseif capacity >= 40 then
 	    battery_icon.text = " "
-	    if battery_widget.fg ~= "#f38ba8" then
-		battery_widget.fg = "#f38ba8"
+	    if battery_widget.fg ~= "#a6e3a1" then
+		battery_widget.fg = "#a6e3a1"
 	    end
 	end
 	battery_text.text = " "..capacity.."%"
@@ -477,7 +501,7 @@ awful.screen.connect_for_each_screen(function(s)
 	update_battery_capacity(capacity)
     end)
 
-    awful.widget.watch('bash -c "cat /sys/class/power_supply/BAT0/status"', 1, function(self, stdout)
+    awful.widget.watch('bash -c "cat /sys/class/power_supply/BAT0/status"', 60, function(self, stdout)
 	update_battery_status(string.sub(stdout, 1, 1) == "D")
     end)
 
@@ -490,6 +514,57 @@ awful.screen.connect_for_each_screen(function(s)
 		top = 3,
 		bottom = 3,
 		widget = wibox.container.margin,
+	    },
+	    bg = "#45475a",
+	    shape = gears.shape.rounded_bar,
+	    widget = wibox.container.background,
+	},
+	top = 7,
+	bottom = 7,
+	left = 12,
+	widget = wibox.container.margin
+    }
+
+    memwidget = wibox.widget.textbox()
+    ram_widget = {
+        {
+	    {
+		memwidget,
+		left = 8,
+		right = 8,
+		top = 3,
+		bottom = 3,
+		widget = wibox.container.margin
+	    },
+	    bg = "#45475a",
+	    shape = gears.shape.rounded_bar,
+	    widget = wibox.container.background,
+	},
+	top = 7,
+	bottom = 7,
+	left = 12,
+	widget = wibox.container.margin
+    }
+    vicious.cache(vicious.widgets.mem)
+    vicious.register(memwidget, vicious.widgets.mem, 
+        function(widget, args)
+	    local usage = tonumber(args[2]) / 1024
+	    local total = tonumber(args[3]) / 1024
+	    if usage and total then
+		return args[1].."%("..string.format("%.1f", usage).."GB/"..string.format("%.1f", total).."GB)"
+	    end
+	end,
+     13)
+
+    eg_widget = {
+        {
+	    {
+		{},
+		left = 6,
+		right = 6,
+		top = 3,
+		bottom = 3,
+		widget = wibox.container.margin
 	    },
 	    bg = "#45475a",
 	    shape = gears.shape.rounded_bar,
@@ -551,6 +626,7 @@ awful.screen.connect_for_each_screen(function(s)
                     {
                         layout = wibox.layout.fixed.horizontal,
 			systray_widget,
+			ram_widget,
 			battery_container_widget,
                         mykeyboardlayout,
 			textclock_widget,

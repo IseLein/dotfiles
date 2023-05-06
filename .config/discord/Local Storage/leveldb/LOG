@@ -1,6 +1,0 @@
-2023/05/05-19:35:10.824 aa40 Reusing MANIFEST /home/iselein/.config/discord/Local Storage/leveldb/MANIFEST-000001
-2023/05/05-19:35:10.824 aa40 Recovering log #3
-2023/05/05-19:35:10.824 aa40 Reusing old log /home/iselein/.config/discord/Local Storage/leveldb/000003.log 
-2023/05/05-19:38:16.184 aa40 Level-0 table #5: started
-2023/05/05-19:38:16.194 aa40 Level-0 table #5: 1596413 bytes OK
-2023/05/05-19:38:16.196 aa40 Delete type=0 #3
