@@ -4,3 +4,18 @@
 .config/spotify/
 .config/dconf/
 .config/mimeapps.list
+.config/BlueMail/
+.config/Thunar/
+.config/Unknown\ Organization/
+.config/Windscribe/
+.config/autostart/
+.config/cef_user_data/
+.config/evolution/
+.config/fontconfig/
+.config/gtk-2.0/
+.config/gtk-3.0/
+.config/htop/
+.config/neofetch/
+.config/nitrogen/
+.config/pulse/
+.config/xfce4/
