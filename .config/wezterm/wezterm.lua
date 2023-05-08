@@ -7,6 +7,9 @@ local config = {
     font_size = 11.0,
     -- color_scheme = "MaterialOcean",
     color_scheme = "Catppuccin Mocha",
+    window_padding = {
+        bottom = 0,
+    },
 }
 
 return config
