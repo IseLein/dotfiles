@@ -525,18 +525,32 @@ awful.screen.connect_for_each_screen(function(s)
 	widget = wibox.container.margin
     }
 
+    mem_icon = wibox.widget.textbox("󰋊 ")
+    mem_icon.font = "14"
     memwidget = wibox.widget.textbox()
+
+    fs_icon = wibox.widget.textbox("  ")
+    fs_icon.font = "14"
+    fs_text = wibox.widget.textbox()
+
     ram_widget = {
         {
 	    {
-		memwidget,
-		left = 8,
+		{
+		    layout = wibox.layout.fixed.horizontal,
+		    mem_icon,
+		    memwidget,
+		    fs_icon,
+		    fs_text,
+		},
+		left = 12,
 		right = 8,
 		top = 3,
 		bottom = 3,
 		widget = wibox.container.margin
 	    },
 	    bg = "#45475a",
+	    fg = "#b4befe",
 	    shape = gears.shape.rounded_bar,
 	    widget = wibox.container.background,
 	},
@@ -549,19 +563,59 @@ awful.screen.connect_for_each_screen(function(s)
     vicious.register(memwidget, vicious.widgets.mem, 
         function(widget, args)
 	    local usage = tonumber(args[2]) / 1024
-	    local total = tonumber(args[3]) / 1024
-	    if usage and total then
-		return args[1].."%("..string.format("%.1f", usage).."GB/"..string.format("%.1f", total).."GB)"
+	    if usage then
+		return args[1].."%("..string.format("%.1f", usage).."GB)"
 	    end
 	end,
      13)
 
-    eg_widget = {
+    vicious.cache(vicious.widgets.fs)
+    vicious.register(fs_text, vicious.widgets.fs, "${/home used_gb}GB", 13)
+
+    volume_icon = wibox.widget.textbox()
+    volume_icon.font = "13"
+    volume_text = wibox.widget.textbox()
+    vol_widget = wibox.widget {
+	{
+	    {
+	        layout = wibox.layout.fixed.horizontal,
+	        volume_icon,
+	        volume_text
+	    },
+	    left = 1,
+	    right = 5,
+	    widget = wibox.container.margin
+	},
+        widget = wibox.container.background
+    }
+    brightness_icon = wibox.widget.textbox("󰃟 ")
+    brightness_icon.font = "13"
+    brightness_text = wibox.widget.textbox()
+    bright_widget = wibox.widget {
+	{
+	    {
+	        layout = wibox.layout.fixed.horizontal,
+	        brightness_icon,
+	        brightness_text
+	    },
+	    left = 5,
+	    right = 1,
+	    widget = wibox.container.margin
+	},
+	fg = "#f9e2af",
+        widget = wibox.container.background
+    }
+
+    volume_brightness_widget = {
         {
 	    {
-		{},
-		left = 6,
-		right = 6,
+		{
+		    layout = wibox.layout.fixed.horizontal,
+		    vol_widget,
+		    bright_widget
+		},
+		left = 12,
+		right = 12,
 		top = 3,
 		bottom = 3,
 		widget = wibox.container.margin
@@ -575,6 +629,26 @@ awful.screen.connect_for_each_screen(function(s)
 	left = 12,
 	widget = wibox.container.margin
     }
+
+    update_volume = function(volume)
+	volume_text.text = volume
+	if tonumber(string.sub(volume, 1, string.len(volume)-1)) == 0 then
+	    volume_icon.text = " "
+	    vol_widget.fg = "#cdd6f4"
+	else
+	    volume_icon.text = " "
+	    vol_widget.fg = "#74c7ec"
+	end
+    end
+
+    update_brightness = function(brightness)
+	brightness_text.text = brightness
+    end
+
+    awful.widget.watch('bash -c "pactl get-sink-volume @DEFAULT_SINK@ | grep Volume | awk \'{print $5}\'"', 120, function(self, stdout)
+	volume = string.sub(stdout, 1, string.len(stdout)-1)
+	update_volume(volume)
+    end)
 
     -- Create the wibox
     s.mywibox = awful.wibar({
@@ -625,8 +699,9 @@ awful.screen.connect_for_each_screen(function(s)
 		{
                     {
                         layout = wibox.layout.fixed.horizontal,
-			systray_widget,
 			ram_widget,
+			systray_widget,
+			volume_brightness_widget,
 			battery_container_widget,
                         mykeyboardlayout,
 			textclock_widget,
@@ -765,6 +840,11 @@ globalkeys = gears.table.join(
     end,
               {description = "rofi - window launcher", group = "rofi"}),
 
+    awful.key({ modkey,           }, "p", function ()
+	awful.util.spawn("rofi -show run")
+    end,
+              {description = "rofi - run", group = "rofi"}),
+
     awful.key({ modkey }, "x",
               function ()
                   awful.prompt.run {
@@ -776,8 +856,46 @@ globalkeys = gears.table.join(
               end,
               {description = "lua execute prompt", group = "awesome"}),
     -- Menubar
-    awful.key({ modkey }, "p", function() menubar.show() end,
-              {description = "show the menubar", group = "launcher"})
+    awful.key({ }, "#121",
+              function()
+                  get_volume = 'bash -c "pactl get-sink-volume @DEFAULT_SINK@ | grep Volume | awk \'{print $5}\'"'
+		  mute = "pactl set-sink-volume @DEFAULT_SINK@ 0%"
+		  play_sound = "paplay ~/dotfiles/audio/mixkit-retro-game-notification-212.wav"
+	          awful.spawn.with_shell(mute)
+	          -- awful.spawn.with_shell(play_sound)
+		  awful.spawn.easy_async(get_volume, function(stdout, _, _, _)
+			volume = string.sub(stdout, 1, string.len(stdout)-1)
+			update_volume(volume)
+	          end)
+	      end,
+              {description = "lower the volume", group = "volume / brightness"}),
+    awful.key({ }, "#122",
+              function()
+                  get_volume = 'bash -c "pactl get-sink-volume @DEFAULT_SINK@ | grep Volume | awk \'{print $5}\'"'
+		  lower_volume = "pactl set-sink-volume @DEFAULT_SINK@ -2%"
+		  play_sound = "paplay ~/dotfiles/audio/mixkit-retro-game-notification-212.wav"
+	          awful.spawn.with_shell(lower_volume)
+	          -- awful.spawn.with_shell(play_sound)
+		  awful.spawn.easy_async(get_volume, function(stdout, _, _, _)
+			volume = string.sub(stdout, 1, string.len(stdout)-1)
+			update_volume(volume)
+	          end)
+	      end,
+              {description = "lower the volume", group = "volume / brightness"}),
+
+    awful.key({ }, "#123",
+              function()
+                  get_volume = 'bash -c "pactl get-sink-volume @DEFAULT_SINK@ | grep Volume | awk \'{print $5}\'"'
+		  raise_volume = "pactl set-sink-volume @DEFAULT_SINK@ +2%"
+		  play_sound = "paplay ~/dotfiles/audio/mixkit-retro-game-notification-212.wav"
+	          awful.spawn.with_shell(raise_volume)
+	          -- awful.spawn.with_shell(play_sound)
+		  awful.spawn.easy_async(get_volume, function(stdout, _, _, _)
+			volume = string.sub(stdout, 1, string.len(stdout)-1)
+			update_volume(volume)
+	          end)
+	      end,
+              {description = "raise the volume", group = "volume / brightness"})
 )
 
 clientkeys = gears.table.join(
