@@ -630,24 +630,32 @@ awful.screen.connect_for_each_screen(function(s)
 	widget = wibox.container.margin
     }
 
+    is_muted = false
     update_volume = function(volume)
 	volume_text.text = volume
 	if tonumber(string.sub(volume, 1, string.len(volume)-1)) == 0 then
 	    volume_icon.text = " "
 	    vol_widget.fg = "#cdd6f4"
+	    is_muted = true
 	else
 	    volume_icon.text = " "
 	    vol_widget.fg = "#74c7ec"
+	    is_muted = false
 	end
     end
 
-    update_brightness = function(brightness)
+    update_brightness = function(stdout)
+	brightness = tostring(math.floor(tonumber(stdout) / 2.55)).."%"
 	brightness_text.text = brightness
     end
 
     awful.widget.watch('bash -c "pactl get-sink-volume @DEFAULT_SINK@ | grep Volume | awk \'{print $5}\'"', 120, function(self, stdout)
 	volume = string.sub(stdout, 1, string.len(stdout)-1)
 	update_volume(volume)
+    end)
+
+    awful.widget.watch('bash -c "cat /sys/class/backlight/amdgpu_bl0/brightness"', 120, function(self, stdout)
+	update_brightness(stdout)
     end)
 
     -- Create the wibox
@@ -697,28 +705,21 @@ awful.screen.connect_for_each_screen(function(s)
 	{ -- Right widgets
 	    {
 		{
-                    {
-                        layout = wibox.layout.fixed.horizontal,
-			ram_widget,
-			systray_widget,
-			volume_brightness_widget,
-			battery_container_widget,
-                        mykeyboardlayout,
-			textclock_widget,
-			{
-			    {
-				wibox.widget.textbox(" "),
-			    	fg = "#f38ba8",
-			        widget = wibox.container.background,
-			    },
-			    right = 10,
-			    top = 6,
-			    bottom = 6,
-			    widget = wibox.container.margin,
-			},
-	            },
-		    bg = "#1e1e2ebf",
-		    widget = wibox.container.background,
+		    {
+                        {
+                            layout = wibox.layout.fixed.horizontal,
+		            ram_widget,
+		            systray_widget,
+		            volume_brightness_widget,
+                            mykeyboardlayout,
+		            textclock_widget,
+		            battery_container_widget,
+	                },
+		        bg = "#1e1e2ebf",
+		        widget = wibox.container.background,
+	    	    },
+		    right = 12,
+		    widget = wibox.container.margin,
 		},
 		shape = gears.shape.rounded_bar,
 		shape_border_width = 2,
@@ -855,11 +856,34 @@ globalkeys = gears.table.join(
                   }
               end,
               {description = "lua execute prompt", group = "awesome"}),
-    -- Menubar
+    -- Volume/Brightness
+    awful.key({ }, "#232", function ()
+	lower_brightness = "light -U 2"
+	get_brightness = "cat /sys/class/backlight/amdgpu_bl0/brightness"
+	awful.spawn.with_shell(lower_brightness)
+	awful.spawn.easy_async(get_brightness, function(stdout, _, _, _)
+	    brightness = string.sub(stdout, 1, string.len(stdout)-1)
+	    update_brightness(brightness)
+	end)
+    end,
+              {description = "lower brightness", group = "volume / brightness"}),
+
+    awful.key({ }, "#233", function ()
+	raise_brightness = "light -A 2"
+	get_brightness = "cat /sys/class/backlight/amdgpu_bl0/brightness"
+	awful.spawn.with_shell(raise_brightness)
+	awful.spawn.easy_async(get_brightness, function(stdout, _, _, _)
+	    brightness = string.sub(stdout, 1, string.len(stdout)-1)
+	    update_brightness(brightness)
+	end)
+    end,
+              {description = "raise brightness", group = "volume / brightness"}),
+
     awful.key({ }, "#121",
               function()
                   get_volume = 'bash -c "pactl get-sink-volume @DEFAULT_SINK@ | grep Volume | awk \'{print $5}\'"'
-		  mute = "pactl set-sink-volume @DEFAULT_SINK@ 0%"
+		  new_vol = is_muted and "20" or "0"
+		  mute = "pactl set-sink-volume @DEFAULT_SINK@ "..new_vol.."%"
 		  play_sound = "paplay ~/dotfiles/audio/mixkit-retro-game-notification-212.wav"
 	          awful.spawn.with_shell(mute)
 	          -- awful.spawn.with_shell(play_sound)
@@ -868,7 +892,7 @@ globalkeys = gears.table.join(
 			update_volume(volume)
 	          end)
 	      end,
-              {description = "lower the volume", group = "volume / brightness"}),
+              {description = "(um)mute the volume", group = "volume / brightness"}),
     awful.key({ }, "#122",
               function()
                   get_volume = 'bash -c "pactl get-sink-volume @DEFAULT_SINK@ | grep Volume | awk \'{print $5}\'"'
