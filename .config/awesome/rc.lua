@@ -49,7 +49,7 @@ end
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
-beautiful.font = "JetBrainsMono Nerd Font Mono 12"
+beautiful.font = "JetBrainsMonoNL Nerd Font Mono 12"
 beautiful.bg_normal = "#1e1e2e"
 -- beautiful.bg_focus = "#a6e3a1"
 beautiful.bg_focus = "#eba0ac"
@@ -72,7 +72,7 @@ beautiful.notification_icon_size = 84
 beautiful.notification_margin = 20
 
 -- This is used later as the default terminal and editor to run.
-terminal = "wezterm"
+terminal = "flatpak run org.wezfurlong.wezterm"
 editor = os.getenv("nvim") or "nano"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -436,7 +436,8 @@ awful.screen.connect_for_each_screen(function(s)
 	widget = wibox.widget.textbox,
     }
     battery_charge_status = wibox.widget {
-	text = " ⚡",
+	text = "⚡",
+    font = "7",
 	widget = wibox.widget.textbox,
     }
     battery_widget = wibox.widget {
@@ -489,11 +490,16 @@ awful.screen.connect_for_each_screen(function(s)
 		battery_widget.fg = "#a6e3a1"
 	    end
 	end
-	battery_text.text = " "..capacity.."%"
+	battery_text.text = capacity.."%"
     end
 
     update_battery_status = function(isDischarging)
-	battery_charge_status.visible = not isDischarging
+        if isDischarging then
+            battery_charge_status.text = "  "
+        else
+            battery_charge_status.text = " ⚡ "
+        end
+	    -- battery_charge_status.visible = not isDischarging
     end
 
     awful.widget.watch('bash -c "cat /sys/class/power_supply/BAT0/capacity"', 60, function(self, stdout)
@@ -560,17 +566,17 @@ awful.screen.connect_for_each_screen(function(s)
 	widget = wibox.container.margin
     }
     vicious.cache(vicious.widgets.mem)
-    vicious.register(memwidget, vicious.widgets.mem, 
+    vicious.register(memwidget, vicious.widgets.mem,
         function(widget, args)
-	    local usage = tonumber(args[2]) / 1024
-	    if usage then
-		return args[1].."%("..string.format("%.1f", usage).."GB)"
-	    end
-	end,
+            local usage = tonumber(args[2]) / 1024
+            if usage then
+                return args[1].."%("..string.format("%.1f", usage).."GB)"
+            end
+	    end,
      13)
 
     vicious.cache(vicious.widgets.fs)
-    vicious.register(fs_text, vicious.widgets.fs, "${/home used_gb}GB", 13)
+    vicious.register(fs_text, vicious.widgets.fs, "${/ used_gb}GB", 13)
 
     volume_icon = wibox.widget.textbox()
     volume_icon.font = "13"
@@ -634,11 +640,11 @@ awful.screen.connect_for_each_screen(function(s)
     update_volume = function(volume)
 	volume_text.text = volume
 	if tonumber(string.sub(volume, 1, string.len(volume)-1)) == 0 then
-	    volume_icon.text = " "
+	    volume_icon.text = " "
 	    vol_widget.fg = "#cdd6f4"
 	    is_muted = true
 	else
-	    volume_icon.text = " "
+	    volume_icon.text = " "
 	    vol_widget.fg = "#74c7ec"
 	    is_muted = false
 	end
