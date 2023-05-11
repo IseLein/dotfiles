@@ -424,23 +424,22 @@ awful.screen.connect_for_each_screen(function(s)
 	s.mytasklist.visible = false
     end)
 
-    battery_text = wibox.widget {
-	align = "center",
-	valign = "center",
-	widget = wibox.widget.textbox,
+    local battery_text = wibox.widget {
+	    align = "center",
+	    valign = "center",
+	    widget = wibox.widget.textbox,
     }
-    battery_icon = wibox.widget {
-	align = "center",
-	valign = "center",
-	font = "12",
-	widget = wibox.widget.textbox,
+    local battery_icon = wibox.widget {
+	    align = "center",
+	    valign = "center",
+	    font = "12",
+	    widget = wibox.widget.textbox,
     }
-    battery_charge_status = wibox.widget {
-	text = "⚡",
-    font = "7",
-	widget = wibox.widget.textbox,
+    local battery_charge_status = wibox.widget {
+        font = "7",
+	    widget = wibox.widget.textbox,
     }
-    battery_widget = wibox.widget {
+    local battery_widget = wibox.widget {
 	{
 	    {
 	        layout = wibox.layout.fixed.horizontal,
@@ -461,39 +460,39 @@ awful.screen.connect_for_each_screen(function(s)
 	shape = gears.shape.rounded_bar,
 	widget = wibox.container.background,
     }
-    battery_container_widget = {
-	battery_widget,
-	top = 7,
-	left = 6,
-	bottom = 7,
-	widget = wibox.container.margin,
+    local battery_container_widget = {
+	    battery_widget,
+	    top = 7,
+	    left = 6,
+	    bottom = 7,
+	    widget = wibox.container.margin,
     }
 
-    update_battery_capacity = function(capacity)
-	battery_icon.text = " "
-	if battery_widget.fg ~= "#f38ba8" then
-	    battery_widget.fg = "#f38ba8"
-	end
-	if capacity >= 80 then
-	    battery_icon.text = " "
-	    if battery_widget.fg ~= "#a6e3a1" then
-		battery_widget.fg = "#a6e3a1"
+    local update_battery_capacity = function(capacity)
+	    battery_icon.text = " "
+	    if battery_widget.fg ~= "#f38ba8" then
+	        battery_widget.fg = "#f38ba8"
 	    end
-    	elseif capacity >= 60 then
-	    battery_icon.text = " "
-	    if battery_widget.fg ~= "#a6e3a1" then
-		battery_widget.fg = "#a6e3a1"
+	    if capacity >= 80 then
+	        battery_icon.text = " "
+	        if battery_widget.fg ~= "#a6e3a1" then
+	    	battery_widget.fg = "#a6e3a1"
+	        end
+        	elseif capacity >= 60 then
+	        battery_icon.text = " "
+	        if battery_widget.fg ~= "#a6e3a1" then
+	    	battery_widget.fg = "#a6e3a1"
+	        end
+        	elseif capacity >= 40 then
+	        battery_icon.text = " "
+	        if battery_widget.fg ~= "#a6e3a1" then
+	    	battery_widget.fg = "#a6e3a1"
+	        end
 	    end
-    	elseif capacity >= 40 then
-	    battery_icon.text = " "
-	    if battery_widget.fg ~= "#a6e3a1" then
-		battery_widget.fg = "#a6e3a1"
-	    end
-	end
-	battery_text.text = capacity.."%"
+	    battery_text.text = capacity.."%"
     end
 
-    update_battery_status = function(isDischarging)
+    local update_battery_status = function(isDischarging)
         if isDischarging then
             battery_charge_status.text = "  "
         else
@@ -503,23 +502,24 @@ awful.screen.connect_for_each_screen(function(s)
     end
 
     awful.widget.watch('bash -c "cat /sys/class/power_supply/BAT0/capacity"', 60, function(self, stdout)
-	capacity = tonumber(stdout)
-	update_battery_capacity(capacity)
+	    local capacity = tonumber(stdout)
+	    update_battery_capacity(capacity)
     end)
 
     awful.widget.watch('bash -c "cat /sys/class/power_supply/BAT0/status"', 60, function(self, stdout)
 	update_battery_status(string.sub(stdout, 1, 1) == "D")
     end)
 
+    tray_widget = wibox.widget.systray()
     systray_widget = {
 	{
 	    {
-	        wibox.widget.systray(),
-		left = 6,
-		right = 6,
-		top = 3,
-		bottom = 3,
-		widget = wibox.container.margin,
+            tray_widget,
+		    left = 6,
+		    right = 6,
+		    top = 3,
+		    bottom = 3,
+		    widget = wibox.container.margin,
 	    },
 	    bg = "#45475a",
 	    shape = gears.shape.rounded_bar,
@@ -594,7 +594,7 @@ awful.screen.connect_for_each_screen(function(s)
 	},
         widget = wibox.container.background
     }
-    brightness_icon = wibox.widget.textbox("󰃟 ")
+    brightness_icon = wibox.widget.textbox()
     brightness_icon.font = "13"
     brightness_text = wibox.widget.textbox()
     bright_widget = wibox.widget {
@@ -651,8 +651,9 @@ awful.screen.connect_for_each_screen(function(s)
     end
 
     update_brightness = function(stdout)
-	brightness = tostring(math.floor(tonumber(stdout) / 2.55)).."%"
-	brightness_text.text = brightness
+	    local brightness = tostring(math.floor(tonumber(stdout) / 2.55)).."%"
+	    brightness_text.text = brightness
+        brightness_icon.text = "󰃟 "
     end
 
     awful.widget.watch('bash -c "pactl get-sink-volume @DEFAULT_SINK@ | grep Volume | awk \'{print $5}\'"', 120, function(self, stdout)
@@ -886,46 +887,61 @@ globalkeys = gears.table.join(
               {description = "raise brightness", group = "volume / brightness"}),
 
     awful.key({ }, "#121",
-              function()
-                  get_volume = 'bash -c "pactl get-sink-volume @DEFAULT_SINK@ | grep Volume | awk \'{print $5}\'"'
-		  new_vol = is_muted and "20" or "0"
-		  mute = "pactl set-sink-volume @DEFAULT_SINK@ "..new_vol.."%"
-		  play_sound = "paplay ~/dotfiles/audio/mixkit-retro-game-notification-212.wav"
-	          awful.spawn.with_shell(mute)
-	          -- awful.spawn.with_shell(play_sound)
-		  awful.spawn.easy_async(get_volume, function(stdout, _, _, _)
-			volume = string.sub(stdout, 1, string.len(stdout)-1)
-			update_volume(volume)
-	          end)
-	      end,
-              {description = "(um)mute the volume", group = "volume / brightness"}),
+        function()
+            get_volume = 'bash -c "pactl get-sink-volume @DEFAULT_SINK@ | grep Volume | awk \'{print $5}\'"'
+            new_vol = is_muted and "20" or "0"
+            mute = "pactl set-sink-volume @DEFAULT_SINK@ "..new_vol.."%"
+            play_sound = "paplay ~/dotfiles/audio/mixkit-retro-game-notification-212.wav"
+            awful.spawn.with_shell(mute)
+            -- awful.spawn.with_shell(play_sound)
+            awful.spawn.easy_async(get_volume, function(stdout, _, _, _)
+                volume = string.sub(stdout, 1, string.len(stdout)-1)
+                update_volume(volume)
+            end)
+        end,
+        {description = "(um)mute the volume", group = "volume / brightness"}
+    ),
     awful.key({ }, "#122",
-              function()
-                  get_volume = 'bash -c "pactl get-sink-volume @DEFAULT_SINK@ | grep Volume | awk \'{print $5}\'"'
-		  lower_volume = "pactl set-sink-volume @DEFAULT_SINK@ -2%"
-		  play_sound = "paplay ~/dotfiles/audio/mixkit-retro-game-notification-212.wav"
-	          awful.spawn.with_shell(lower_volume)
-	          -- awful.spawn.with_shell(play_sound)
-		  awful.spawn.easy_async(get_volume, function(stdout, _, _, _)
-			volume = string.sub(stdout, 1, string.len(stdout)-1)
-			update_volume(volume)
-	          end)
-	      end,
-              {description = "lower the volume", group = "volume / brightness"}),
+        function()
+            get_volume = 'bash -c "pactl get-sink-volume @DEFAULT_SINK@ | grep Volume | awk \'{print $5}\'"'
+            lower_volume = "pactl set-sink-volume @DEFAULT_SINK@ -2%"
+            play_sound = "paplay ~/dotfiles/audio/mixkit-retro-game-notification-212.wav"
+            awful.spawn.with_shell(lower_volume)
+            -- awful.spawn.with_shell(play_sound)
+            awful.spawn.easy_async(get_volume, function(stdout, _, _, _)
+                volume = string.sub(stdout, 1, string.len(stdout)-1)
+                update_volume(volume)
+            end)
+        end,
+        {description = "lower the volume", group = "volume / brightness"}
+    ),
 
     awful.key({ }, "#123",
-              function()
-                  get_volume = 'bash -c "pactl get-sink-volume @DEFAULT_SINK@ | grep Volume | awk \'{print $5}\'"'
-		  raise_volume = "pactl set-sink-volume @DEFAULT_SINK@ +2%"
-		  play_sound = "paplay ~/dotfiles/audio/mixkit-retro-game-notification-212.wav"
-	          awful.spawn.with_shell(raise_volume)
-	          -- awful.spawn.with_shell(play_sound)
-		  awful.spawn.easy_async(get_volume, function(stdout, _, _, _)
-			volume = string.sub(stdout, 1, string.len(stdout)-1)
-			update_volume(volume)
-	          end)
-	      end,
-              {description = "raise the volume", group = "volume / brightness"})
+        function()
+            get_volume = 'bash -c "pactl get-sink-volume @DEFAULT_SINK@ | grep Volume | awk \'{print $5}\'"'
+            raise_volume = "pactl set-sink-volume @DEFAULT_SINK@ +2%"
+            play_sound = "paplay ~/dotfiles/audio/mixkit-retro-game-notification-212.wav"
+            awful.spawn.with_shell(raise_volume)
+            -- awful.spawn.with_shell(play_sound)
+            awful.spawn.easy_async(get_volume, function(stdout, _, _, _)
+                volume = string.sub(stdout, 1, string.len(stdout)-1)
+                update_volume(volume)
+            end)
+        end,
+        {description = "raise the volume", group = "volume / brightness"}
+    ),
+
+    awful.key({ modkey, "Shift" }, "s",
+        function ()
+            awful.spawn.with_shell("gscreenshot")
+        end, {description = "move systray to screen", group = "awesome"}
+    ),
+
+    awful.key({ modkey }, "t",
+        function ()
+            tray_widget:set_screen(awful.screen.focused())
+        end, {description = "move systray to screen", group = "awesome"}
+    )
 )
 
 clientkeys = gears.table.join(

@@ -9,6 +9,7 @@ local config = {
     color_scheme = "Catppuccin Mocha",
     window_padding = {
         bottom = 0,
+        right = 0,
     },
 }
 
