@@ -469,22 +469,22 @@ awful.screen.connect_for_each_screen(function(s)
     }
 
     local update_battery_capacity = function(capacity)
-	    battery_icon.text = " "
+	    battery_icon.text = "  "
 	    if battery_widget.fg ~= "#f38ba8" then
 	        battery_widget.fg = "#f38ba8"
 	    end
 	    if capacity >= 80 then
-	        battery_icon.text = " "
+	        battery_icon.text = "  "
 	        if battery_widget.fg ~= "#a6e3a1" then
 	    	battery_widget.fg = "#a6e3a1"
 	        end
         	elseif capacity >= 60 then
-	        battery_icon.text = " "
+	        battery_icon.text = "  "
 	        if battery_widget.fg ~= "#a6e3a1" then
 	    	battery_widget.fg = "#a6e3a1"
 	        end
         	elseif capacity >= 40 then
-	        battery_icon.text = " "
+	        battery_icon.text = "  "
 	        if battery_widget.fg ~= "#a6e3a1" then
 	    	battery_widget.fg = "#a6e3a1"
 	        end
@@ -531,40 +531,41 @@ awful.screen.connect_for_each_screen(function(s)
 	widget = wibox.container.margin
     }
 
-    mem_icon = wibox.widget.textbox("󰋊 ")
+    local mem_icon = wibox.widget.textbox("󰋊 ")
     mem_icon.font = "14"
-    memwidget = wibox.widget.textbox()
+    local memwidget = wibox.widget.textbox()
 
-    fs_icon = wibox.widget.textbox("  ")
+    local fs_icon = wibox.widget.textbox("   ")
     fs_icon.font = "14"
-    fs_text = wibox.widget.textbox()
+    local fs_text = wibox.widget.textbox()
 
-    ram_widget = {
+    local ram_widget = {
         {
-	    {
-		{
-		    layout = wibox.layout.fixed.horizontal,
-		    mem_icon,
-		    memwidget,
-		    fs_icon,
-		    fs_text,
-		},
-		left = 12,
-		right = 8,
-		top = 3,
-		bottom = 3,
-		widget = wibox.container.margin
-	    },
-	    bg = "#45475a",
-	    fg = "#b4befe",
-	    shape = gears.shape.rounded_bar,
-	    widget = wibox.container.background,
-	},
-	top = 7,
-	bottom = 7,
-	left = 12,
-	widget = wibox.container.margin
+            {
+                {
+                    layout = wibox.layout.fixed.horizontal,
+                    mem_icon,
+                    memwidget,
+                    fs_icon,
+                    fs_text,
+                },
+                left = 12,
+                right = 8,
+                top = 3,
+                bottom = 3,
+                widget = wibox.container.margin
+	        },
+            bg = "#45475a",
+            fg = "#b4befe",
+            shape = gears.shape.rounded_bar,
+            widget = wibox.container.background,
+        },
+        top = 7,
+        bottom = 7,
+        left = 12,
+        widget = wibox.container.margin
     }
+
     vicious.cache(vicious.widgets.mem)
     vicious.register(memwidget, vicious.widgets.mem,
         function(widget, args)
@@ -578,91 +579,93 @@ awful.screen.connect_for_each_screen(function(s)
     vicious.cache(vicious.widgets.fs)
     vicious.register(fs_text, vicious.widgets.fs, "${/ used_gb}GB", 13)
 
-    volume_icon = wibox.widget.textbox()
+    local volume_icon = wibox.widget.textbox()
     volume_icon.font = "13"
-    volume_text = wibox.widget.textbox()
-    vol_widget = wibox.widget {
-	{
-	    {
-	        layout = wibox.layout.fixed.horizontal,
-	        volume_icon,
-	        volume_text
-	    },
-	    left = 1,
-	    right = 5,
-	    widget = wibox.container.margin
-	},
-        widget = wibox.container.background
-    }
-    brightness_icon = wibox.widget.textbox()
-    brightness_icon.font = "13"
-    brightness_text = wibox.widget.textbox()
-    bright_widget = wibox.widget {
-	{
-	    {
-	        layout = wibox.layout.fixed.horizontal,
-	        brightness_icon,
-	        brightness_text
-	    },
-	    left = 5,
-	    right = 1,
-	    widget = wibox.container.margin
-	},
-	fg = "#f9e2af",
-        widget = wibox.container.background
-    }
-
-    volume_brightness_widget = {
+    local volume_text = wibox.widget.textbox()
+    local vol_widget = wibox.widget {
         {
-	    {
-		{
-		    layout = wibox.layout.fixed.horizontal,
-		    vol_widget,
-		    bright_widget
-		},
-		left = 12,
-		right = 12,
-		top = 3,
-		bottom = 3,
-		widget = wibox.container.margin
-	    },
-	    bg = "#45475a",
-	    shape = gears.shape.rounded_bar,
-	    widget = wibox.container.background,
-	},
-	top = 7,
-	bottom = 7,
-	left = 12,
-	widget = wibox.container.margin
+            {
+                layout = wibox.layout.fixed.horizontal,
+                volume_icon,
+                volume_text
+            },
+            left = 1,
+            right = 5,
+            widget = wibox.container.margin
+        },
+        widget = wibox.container.background
+    }
+    local brightness_icon = wibox.widget.textbox()
+    brightness_icon.font = "13"
+    local brightness_text = wibox.widget.textbox()
+    local bright_widget = wibox.widget {
+        {
+            {
+                layout = wibox.layout.fixed.horizontal,
+                brightness_icon,
+                brightness_text
+            },
+            left = 5,
+            right = 1,
+            widget = wibox.container.margin
+        },
+        fg = "#f9e2af",
+        widget = wibox.container.background
     }
 
-    is_muted = false
-    update_volume = function(volume)
-	volume_text.text = volume
-	if tonumber(string.sub(volume, 1, string.len(volume)-1)) == 0 then
-	    volume_icon.text = " "
-	    vol_widget.fg = "#cdd6f4"
-	    is_muted = true
-	else
-	    volume_icon.text = " "
-	    vol_widget.fg = "#74c7ec"
-	    is_muted = false
-	end
+    local volume_brightness_widget = {
+        {
+            {
+                {
+                    layout = wibox.layout.fixed.horizontal,
+                    vol_widget,
+                    bright_widget
+                },
+                left = 12,
+                right = 12,
+                top = 3,
+                bottom = 3,
+                widget = wibox.container.margin
+            },
+            bg = "#45475a",
+            shape = gears.shape.rounded_bar,
+            widget = wibox.container.background,
+        },
+        top = 7,
+        bottom = 7,
+        left = 12,
+        widget = wibox.container.margin
+    }
+
+    update_volume = function(volume, is_muted)
+        volume_text.text = volume.."%"
+        if is_muted then
+            volume_icon.text = "  "
+            vol_widget.fg = "#cdd6f4"
+        elseif is_muted == false then
+            volume_icon.text = "  "
+            vol_widget.fg = "#74c7ec"
+        end
     end
 
     update_brightness = function(stdout)
 	    local brightness = tostring(math.floor(tonumber(stdout) / 2.55)).."%"
 	    brightness_text.text = brightness
-        brightness_icon.text = "󰃟 "
+        brightness_icon.text = "󰃟  "
     end
 
-    awful.widget.watch('bash -c "pactl get-sink-volume @DEFAULT_SINK@ | grep Volume | awk \'{print $5}\'"', 120, function(self, stdout)
-	volume = string.sub(stdout, 1, string.len(stdout)-1)
-	update_volume(volume)
+    awful.widget.watch('bash -c "pulsemixer --get-volume | awk \'{print $1}\'"', 120, function(self, stdout)
+        local volume = string.sub(stdout, 1, string.len(stdout)-1)
+        local check_muted = 'bash -c "pulsemixer --get-mute"'
+        local is_muted = false
+        awful.spawn.easy_async(check_muted, function(out, _, _, _)
+            is_muted = tonumber(out) == 1
+        end)
+        update_volume(volume, is_muted)
     end)
 
     awful.widget.watch('bash -c "cat /sys/class/backlight/amdgpu_bl0/brightness"', 120, function(self, stdout)
-	update_brightness(stdout)
+        update_brightness(stdout)
     end)
 
     -- Create the wibox
@@ -864,52 +867,60 @@ globalkeys = gears.table.join(
               end,
               {description = "lua execute prompt", group = "awesome"}),
     -- Volume/Brightness
-    awful.key({ }, "#232", function ()
-	lower_brightness = "light -U 2"
-	get_brightness = "cat /sys/class/backlight/amdgpu_bl0/brightness"
-	awful.spawn.with_shell(lower_brightness)
-	awful.spawn.easy_async(get_brightness, function(stdout, _, _, _)
-	    brightness = string.sub(stdout, 1, string.len(stdout)-1)
-	    update_brightness(brightness)
-	end)
-    end,
-              {description = "lower brightness", group = "volume / brightness"}),
+    awful.key({ }, "#232",
+        function ()
+            local lower_brightness = "light -U 2"
+            local get_brightness = "cat /sys/class/backlight/amdgpu_bl0/brightness"
+            awful.spawn.with_shell(lower_brightness)
+            awful.spawn.easy_async(get_brightness, function(stdout, _, _, _)
+                local brightness = string.sub(stdout, 1, string.len(stdout)-1)
+                update_brightness(brightness)
+            end)
+        end,
+        {description = "lower brightness", group = "volume / brightness"}
+    ),
 
     awful.key({ }, "#233", function ()
-	raise_brightness = "light -A 2"
-	get_brightness = "cat /sys/class/backlight/amdgpu_bl0/brightness"
-	awful.spawn.with_shell(raise_brightness)
-	awful.spawn.easy_async(get_brightness, function(stdout, _, _, _)
-	    brightness = string.sub(stdout, 1, string.len(stdout)-1)
-	    update_brightness(brightness)
+        local raise_brightness = "light -A 2"
+        local get_brightness = "cat /sys/class/backlight/amdgpu_bl0/brightness"
+        awful.spawn.with_shell(raise_brightness)
+        awful.spawn.easy_async(get_brightness, function(stdout, _, _, _)
+            local brightness = string.sub(stdout, 1, string.len(stdout)-1)
+            update_brightness(brightness)
 	end)
     end,
               {description = "raise brightness", group = "volume / brightness"}),
 
     awful.key({ }, "#121",
         function()
-            get_volume = 'bash -c "pactl get-sink-volume @DEFAULT_SINK@ | grep Volume | awk \'{print $5}\'"'
-            new_vol = is_muted and "20" or "0"
-            mute = "pactl set-sink-volume @DEFAULT_SINK@ "..new_vol.."%"
-            play_sound = "paplay ~/dotfiles/audio/mixkit-retro-game-notification-212.wav"
-            awful.spawn.with_shell(mute)
+            local get_volume = 'bash -c "pulsemixer --get-volume | awk \'{print $1}\'"'
+            local play_sound = "paplay ~/dotfiles/audio/mixkit-retro-game-notification-212.wav"
+            local check_muted = 'bash -c "pulsemixer --get-mute"'
+            local toggle_mute = 'bash -c "pulsemixer --toggle-mute"'
+            local is_muted = false
+
+            awful.spawn.easy_async(check_muted, function(stdout, _, _, _)
+                is_muted = stdout:sub(1, 1) == '0'
+            end)
+            awful.spawn.with_shell(toggle_mute)
+
             -- awful.spawn.with_shell(play_sound)
             awful.spawn.easy_async(get_volume, function(stdout, _, _, _)
-                volume = string.sub(stdout, 1, string.len(stdout)-1)
-                update_volume(volume)
+                local volume = string.sub(stdout, 1, string.len(stdout)-1)
+                update_volume(volume, is_muted)
             end)
         end,
-        {description = "(um)mute the volume", group = "volume / brightness"}
+        {description = "(un)mute the volume", group = "volume / brightness"}
     ),
     awful.key({ }, "#122",
         function()
-            get_volume = 'bash -c "pactl get-sink-volume @DEFAULT_SINK@ | grep Volume | awk \'{print $5}\'"'
-            lower_volume = "pactl set-sink-volume @DEFAULT_SINK@ -2%"
-            play_sound = "paplay ~/dotfiles/audio/mixkit-retro-game-notification-212.wav"
+            local get_volume = 'bash -c "pulsemixer --get-volume | awk \'{print $1}\'"'
+            local lower_volume = 'bash -c "pulsemixer --change-volume -2"'
+            local play_sound = "paplay ~/dotfiles/audio/mixkit-retro-game-notification-212.wav"
             awful.spawn.with_shell(lower_volume)
             -- awful.spawn.with_shell(play_sound)
             awful.spawn.easy_async(get_volume, function(stdout, _, _, _)
-                volume = string.sub(stdout, 1, string.len(stdout)-1)
+                local volume = string.sub(stdout, 1, string.len(stdout)-1)
                 update_volume(volume)
             end)
         end,
@@ -918,13 +929,13 @@ globalkeys = gears.table.join(
 
     awful.key({ }, "#123",
         function()
-            get_volume = 'bash -c "pactl get-sink-volume @DEFAULT_SINK@ | grep Volume | awk \'{print $5}\'"'
-            raise_volume = "pactl set-sink-volume @DEFAULT_SINK@ +2%"
-            play_sound = "paplay ~/dotfiles/audio/mixkit-retro-game-notification-212.wav"
+            local get_volume = 'bash -c "pulsemixer --get-volume | awk \'{print $1}\'"'
+            local raise_volume = 'bash -c "pulsemixer --change-volume +2"'
+            local play_sound = "paplay ~/dotfiles/audio/mixkit-retro-game-notification-212.wav"
             awful.spawn.with_shell(raise_volume)
             -- awful.spawn.with_shell(play_sound)
             awful.spawn.easy_async(get_volume, function(stdout, _, _, _)
-                volume = string.sub(stdout, 1, string.len(stdout)-1)
+                local volume = string.sub(stdout, 1, string.len(stdout)-1)
                 update_volume(volume)
             end)
         end,
@@ -1184,6 +1195,6 @@ end)
 beautiful.useless_gap = 5
 
 -- Autostart
-awful.spawn.with_shell("picom")
+awful.spawn.with_shell("compton")
 awful.spawn.with_shell("feh --bg-fill --randomize ~/dotfiles/wallpapers/*")
 awful.spawn.with_shell("nm-applet")
