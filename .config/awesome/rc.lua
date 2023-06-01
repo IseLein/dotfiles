@@ -308,7 +308,7 @@ awful.screen.connect_for_each_screen(function(s)
     mytextlogo = wibox.widget.textbox()
     -- mytextlogo.text = ""
     -- mytextlogo.font = "18"
-    mytextlogo:set_markup("<span foreground='#f38ba8' font='26'></span>")
+    mytextlogo:set_markup("<span foreground='#f38ba8' font='12'>🐬</span>")
     padded_logo = wibox.container.margin(mytextlogo, 14, 20, 0, 0)
     bg_logo = wibox.container.background(padded_logo, "#1e1e2ebf")
 
@@ -856,6 +856,11 @@ globalkeys = gears.table.join(
     end,
               {description = "rofi - run", group = "rofi"}),
 
+    awful.key({ modkey,           }, "y", function ()
+	    awful.util.spawn("/home/iselein/dotfiles/bin/lock")
+    end,
+              {description = "lock screen", group = "launcher"}),
+
     awful.key({ modkey }, "x",
               function ()
                   awful.prompt.run {
@@ -866,6 +871,23 @@ globalkeys = gears.table.join(
                   }
               end,
               {description = "lua execute prompt", group = "awesome"}),
+    awful.key({ modkey, "Shift" }, "x",
+              function ()
+                  awful.prompt.run {
+                    prompt       = "<b>zsh% </b>",
+                    textbox      = awful.screen.focused().mypromptbox.widget,
+                    exe_callback = function (input)
+                        if not input or #input == 0 then return end
+                        if input == "f-dev" then
+                            input = "/home/iselein/pkgs/firefox/firefox"
+                        elseif input == "idea" then
+                            input = "/home/iselein/pkgs/idea-IU-231.9011.34/bin/idea.sh"
+                        end
+                        awful.spawn.with_shell(input)
+                    end
+                  }
+              end,
+              {description = "sh execute prompt", group = "awesome"}),
     -- Volume/Brightness
     awful.key({ }, "#232",
         function ()
@@ -1198,3 +1220,5 @@ beautiful.useless_gap = 5
 awful.spawn.with_shell("compton")
 awful.spawn.with_shell("feh --bg-fill --randomize ~/dotfiles/wallpapers/*")
 awful.spawn.with_shell("nm-applet")
+awful.spawn.with_shell("/home/iselein/pkgs/firefox/firefox")
+awful.spawn.with_shell("xidlehook --not-when-audio --timer 90 '/home/iselein/dotfiles/bin/lock' ''")
