@@ -190,6 +190,9 @@ end
 screen.connect_signal("property::geometry", set_wallpaper)
 
 awful.screen.connect_for_each_screen(function(s)
+    -- keyboard
+    local virtual_keyboard = require("virtual_keyboard")
+    s.virtual_keyboard = virtual_keyboard:new({ screen = s })
     -- Wallpaper
     set_wallpaper(s)
 
@@ -668,6 +671,32 @@ awful.screen.connect_for_each_screen(function(s)
         update_brightness(stdout)
     end)
 
+    local keyboard_button = wibox.widget.textbox("󰌌 ")
+    keyboard_button.font = "15"
+    local key_button_widget = wibox.container {
+        {
+            {
+                keyboard_button,
+                left = 7,
+                right = 6,
+                top = 3,
+                bottom = 3,
+                widget = wibox.container.margin
+            },
+            bg = "#45475a",
+            shape = gears.shape.rounded_bar,
+            widget = wibox.container.background,
+        },
+        top = 7,
+        bottom = 7,
+        left = 12,
+        widget = wibox.container.margin
+    }
+    local keyboard_button_widget = wibox.container.margin(key_button_widget)
+    keyboard_button_widget:connect_signal("button::press", function (_, _, _)
+        awful.screen.focused().virtual_keyboard:toggle()
+    end)
+
     -- Create the wibox
     s.mywibox = awful.wibar({
 	position = "top",
@@ -712,39 +741,40 @@ awful.screen.connect_for_each_screen(function(s)
 	},
         -- s.mytasklist, -- Middle widget
 	middle,
-	{ -- Right widgets
-	    {
-		{
-		    {
-                        {
-                            layout = wibox.layout.fixed.horizontal,
-		            ram_widget,
-		            systray_widget,
-		            volume_brightness_widget,
-                            mykeyboardlayout,
-		            textclock_widget,
-		            battery_container_widget,
-	    	        },
-		        right = 12,
-		        widget = wibox.container.margin,
-	           },
-		   bg = "#1e1e2ebf",
-		   widget = wibox.container.background,
-		},
-		shape = gears.shape.rounded_bar,
-		shape_border_width = 2,
-		shape_clip = true,
-		shape_border_color = "#cba6f7",
-		widget = wibox.container.background,
-    	    },
-	    left = 0,
-	    right = 6,
-	    top = 3,
-	    bottom = 0,
-	    border_width = 1,
-	    border_color = "#cba6f7",
-	    widget = wibox.container.margin,
+    { -- Right widgets
+        {
+            {
+                {
+                    {
+                        layout = wibox.layout.fixed.horizontal,
+                        ram_widget,
+                        systray_widget,
+                        volume_brightness_widget,
+                        mykeyboardlayout,
+                        textclock_widget,
+                        battery_container_widget,
+                        keyboard_button_widget,
+                    },
+                    right = 12,
+                    widget = wibox.container.margin,
+                },
+                bg = "#1e1e2ebf",
+                widget = wibox.container.background,
+            },
+            shape = gears.shape.rounded_bar,
+            shape_border_width = 2,
+            shape_clip = true,
+            shape_border_color = "#cba6f7",
+            widget = wibox.container.background,
         },
+        left = 0,
+        right = 6,
+        top = 3,
+        bottom = 0,
+        border_width = 1,
+        border_color = "#cba6f7",
+        widget = wibox.container.margin,
+    },
     }
 end)
 -- }}}
@@ -967,6 +997,12 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Shift" }, "s",
         function ()
             awful.spawn.with_shell("gscreenshot")
+        end, {description = "move systray to screen", group = "awesome"}
+    ),
+
+    awful.key({ modkey }, "a",
+        function ()
+            awful.screen.focused().virtual_keyboard:toggle()
         end, {description = "move systray to screen", group = "awesome"}
     ),
 
@@ -1208,7 +1244,19 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- Rounded windows
 client.connect_signal("manage", function(c)
     c.shape = function(cr,w,h)
-	gears.shape.rounded_rect(cr,w,h,8)
+	    gears.shape.rounded_rect(cr,w,h,8)
+    end
+end)
+
+client.connect_signal("property::fullscreen", function(c)
+    if not c.fullscreen then
+        c.shape = function(cr,w,h)
+            gears.shape.rounded_rect(cr,w,h,8)
+        end
+    else
+        c.shape = function(cr,w,h)
+            gears.shape.rectangle(cr,w,h)
+        end
     end
 end)
 -- }}}
@@ -1218,7 +1266,7 @@ beautiful.useless_gap = 5
 
 -- Autostart
 awful.spawn.with_shell("compton")
-awful.spawn.with_shell("feh --bg-fill --randomize ~/dotfiles/wallpapers/*")
+awful.spawn.with_shell("feh --bg-fill --randomize /home/iselein/dotfiles/wallpapers/*")
 awful.spawn.with_shell("nm-applet")
-awful.spawn.with_shell("/home/iselein/pkgs/firefox/firefox")
-awful.spawn.with_shell("xidlehook --not-when-audio --timer 90 '/home/iselein/dotfiles/bin/lock' ''")
+-- awful.spawn.with_shell("/home/iselein/pkgs/firefox/firefox")
+awful.spawn.with_shell("xidlehook --not-when-audio --timer 150 '/home/iselein/dotfiles/bin/lock' ''")
