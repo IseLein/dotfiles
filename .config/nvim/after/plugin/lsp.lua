@@ -65,3 +65,15 @@ vim.diagnostic.config({
     virtual_text = true,
     float = { border = "rounded" }
 })
+
+-- linting
+local lint = require("lint")
+lint.linters_by_ft = {
+    tex = { "cspell", "proselint", }
+}
+
+vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+  callback = function()
+    lint.try_lint()
+  end,
+})

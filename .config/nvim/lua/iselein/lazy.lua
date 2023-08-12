@@ -48,6 +48,9 @@ require("lazy").setup({
     },
     { "folke/neodev.nvim" },
 
+    -- linter
+    { "mfussenegger/nvim-lint" },
+
     -- treesitter + looks
     {
         "nvim-treesitter/nvim-treesitter",
@@ -62,11 +65,17 @@ require("lazy").setup({
     { "numToStr/Comment.nvim", opts = {} },
     { "lewis6991/gitsigns.nvim", opts = {} },
     { "folke/trouble.nvim", dependencies = { "kyazdani42/nvim-web-devicons" }, opts = { icons = true } },
-    { "j-hui/fidget.nvim" },
+    { "j-hui/fidget.nvim", tag="legacy" },
     { "lukas-reineke/indent-blankline.nvim" },
     { "nvim-tree/nvim-tree.lua", dependencies = { "kyazdani42/nvim-web-devicons" } },
+
+    -- symbols outline
+    { "simrat39/symbols-outline.nvim" },
 
     -- color schemes
     { "rose-pine/neovim", name = "rose-pine" },
     { "folke/tokyonight.nvim" },
+
+    -- tex live preview
+    { "xuhdev/vim-latex-live-preview" },
 })

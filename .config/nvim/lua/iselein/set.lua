@@ -30,3 +30,6 @@ vim.opt.updatetime = 50
 vim.opt.colorcolumn = "80"
 
 vim.g.mapleader = " "
+
+-- plugins
+vim.g.livepreview_previewer = "zathura"
