@@ -48,6 +48,9 @@ require("rose-pine").setup({
         IndentBlanklineContextChar = { fg = "rose" },
 
         CursorLine = { bg = "base" },
+
+        -- hello
+        Comment = { italic = true },
     }
 })
 

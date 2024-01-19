@@ -8,8 +8,24 @@ lsp.ensure_installed({
     "tsserver",
     "eslint",
     "lua_ls",
+    "clangd",
     "rust_analyzer",
 })
+
+-- kernel programming
+-- local lsp_config = require("lspconfig")
+-- lsp_config.clangd.setup {
+--     cmd = { "clangd", "--background-index", "--compile-commands-dir=/lib/modules/6.5.4-arch2-1/build/" },
+--     root_dir = function(_, _)
+--         return "/lib/modules/6.5.4-arch2-1/build/"
+--     end,
+--     filetypes = { 'c', 'cpp' },
+--     init_options = {
+--         clangdFileStatus = true,
+--         usePlaceholders = true,
+--         completeUnimported = true,
+--     },
+-- }
 
 -- fix undefined global vim
 lsp.nvim_workspace()
