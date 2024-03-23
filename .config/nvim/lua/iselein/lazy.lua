@@ -133,7 +133,24 @@ require("lazy").setup({
             end
         end
     },
+    {
+        'nvim-tree/nvim-tree.lua',
+        dependencies = { 'kyazdani42/nvim-web-devicons' },
+    },
+    {
+        "folke/trouble.nvim",
+        dependencies = { "kyazdani42/nvim-web-devicons" },
+        opts = { icons = true },
+    },
+    { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
+
 
     -- latex
     { "xuhdev/vim-latex-live-preview" },
+    { "lervag/vimtex" },
+
+    -- copilot
+    { "github/copilot.vim" },
+
+
 })
