@@ -133,4 +133,7 @@ require("lazy").setup({
             end
         end
     },
+
+    -- latex
+    { "xuhdev/vim-latex-live-preview" },
 })

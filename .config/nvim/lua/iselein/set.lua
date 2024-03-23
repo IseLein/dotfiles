@@ -40,9 +40,8 @@ vim.cmd('filetype plugin on')
 vim.cmd('filetype indent on')
 
 vim.opt.list = true
-vim.opt.listchars:append "eol:↴"
-
-vim.g.tex_flavor = "latex"
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣', eol = '↴' }
 
 -- plugins
+vim.g.tex_flavor = "latex"
 vim.g.livepreview_previewer = "zathura"
