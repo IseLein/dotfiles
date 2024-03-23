@@ -16,7 +16,7 @@ vim.opt.wrap = false
 
 vim.opt.swapfile = false
 vim.opt.backup = false
-vim.opt.undodir = os.getenv("HOME").."/.vim/undodir"
+vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undofile = true
 
 vim.opt.hlsearch = false
@@ -39,9 +39,10 @@ vim.cmd('filetype on')
 vim.cmd('filetype plugin on')
 vim.cmd('filetype indent on')
 
+vim.opt.list = true
+vim.opt.listchars:append "eol:↴"
+
 vim.g.tex_flavor = "latex"
 
 -- plugins
 vim.g.livepreview_previewer = "zathura"
-
--- vim.cmd.colorscheme("moonfly")
