@@ -1,0 +1,21 @@
+[font]
+size = 14
+
+[font.normal]
+family = "IosevkaTerm Nerd Font Mono"
+style = "Medium"
+
+[font.bold]
+family = "IosevkaTerm Nerd Font Mono"
+style = "Semibold"
+
+[font.italic]
+family = "IosevkaTerm Nerd Font Mono"
+style = "Medium Italic"
+
+[font.bold_italic]
+family = "IosevkaTerm Nerd Font Mono"
+style = "Semibold Italic"
+
+[window]
+opacity = 0.9

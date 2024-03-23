@@ -1,40 +1,36 @@
 require("rose-pine").setup({
-    variant = "auto",
+    variant = "main",
     dark_variant = "main",
+    dim_inactive_windows = false,
+    extend_background_behind_borders = true,
+
     bold_vert_split = true,
-    dim_nc_background = false,
-    disable_background = false,
-    disable_float_background = false,
-    disable_italics = true,
+
+    enable = {
+        terminal = true,
+        legacy_highlights = true,
+        migrations = true,
+    },
+
+    styles = {
+        italic = false,
+        transparency = false,
+    },
 
     groups = {
         background = "base",
         background_nc = "_experimental_nc",
         panel = "surface",
         panel_nc = "base",
-        border = "_experimental_nc",
         comment = "muted",
         link = "iris",
         punctuation = "subtle",
 
-        error = "love",
-        hint = "iris",
-        info = "foam",
-        warn = "gold",
 
-        headings = {
-            h1 = "iris",
-            h2 = "foam",
-            h3 = "rose",
-            h4 = "gold",
-            h5 = "pine",
-            h6 = "foam",
-        }
+        border = "base",
     },
 
     highlight_groups = {
-        NvimTreeNormal = { bg = "_experimental_nc" },
-
         MasonHeader = { fg = "base", bg = "gold" },
         MasonHighlight = { fg = "foam" },
         MasonHighlightBlock = { fg = "base", bg = "pine" },
@@ -48,10 +44,11 @@ require("rose-pine").setup({
         IndentBlanklineContextChar = { fg = "rose" },
 
         CursorLine = { bg = "base" },
+        CursorLineNr = { fg = "rose" },
 
         -- hello
         Comment = { italic = true },
     }
 })
 
-vim.cmd.colorscheme("rose-pine")
+-- vim.cmd.colorscheme("rose-pine")

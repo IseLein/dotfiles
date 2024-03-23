@@ -10,7 +10,13 @@ lsp.ensure_installed({
     "lua_ls",
     "clangd",
     "rust_analyzer",
+    "sqlls",
 })
+
+-- local lspconfig = require("lspconfig")
+-- lspconfig.sqlls.setup({
+--     filetypes = {"ddl"},
+-- })
 
 -- kernel programming
 -- local lsp_config = require("lspconfig")
@@ -38,6 +44,9 @@ local cmp_mappings = lsp.defaults.cmp_mappings({
     ["<C-y>"] = cmp.mapping.confirm({ select = true }),
     ["<C-Space>"] = cmp.mapping.complete(),
 })
+
+cmp_mappings["<Tab>"] = vim.NIL
+cmp_mappings["<S-Tab>"] = vim.NIL
 
 lsp.setup_nvim_cmp({
     mappings = cmp_mappings

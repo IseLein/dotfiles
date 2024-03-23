@@ -1,7 +1,10 @@
 -- vim.opt.guicursor = ""
 
+vim.opt.cul = true
+vim.opt.culopt = "number"
+
 vim.opt.nu = true
-vim.opt.rnu = true
+-- vim.opt.rnu = true
 
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
@@ -30,6 +33,15 @@ vim.opt.updatetime = 50
 vim.opt.colorcolumn = "80"
 
 vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
+vim.cmd('filetype on')
+vim.cmd('filetype plugin on')
+vim.cmd('filetype indent on')
+
+vim.g.tex_flavor = "latex"
 
 -- plugins
 vim.g.livepreview_previewer = "zathura"
+
+-- vim.cmd.colorscheme("moonfly")

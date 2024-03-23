@@ -157,11 +157,9 @@ ins_left {
 }
 
 ins_left {
-    -- filesize component
-    'filesize',
-    cond = conditions.buffer_not_empty,
+    'branch', icon = '',
+    color = { gui = 'bold' },
 }
-
 
 ins_left {
     'diagnostics',
@@ -176,9 +174,9 @@ ins_left {
 
 -- Add components to right sections
 ins_right {
-    'branch',
-    icon = '',
-    color = { gui = 'bold' },
+    -- filesize component
+    'filesize',
+    cond = conditions.buffer_not_empty,
 }
 
 --[[
@@ -193,7 +191,6 @@ ins_right {
     },
     cond = conditions.hide_in_width,
 }
-]]--
 
 ins_right {
     -- Lsp server name .
@@ -215,6 +212,7 @@ ins_right {
     icon = ' LSP:',
     color = { fg = '#ffffff', gui = 'bold' },
 }
+]]--
 
 ins_right {
     'o:encoding', -- option component same as &encoding in viml

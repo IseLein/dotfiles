@@ -8,9 +8,7 @@ if not vim.loop.fs_stat(lazypath) then
 	"--branch=stable", -- latest stable release
 	lazypath,
     })
-end
-vim.opt.rtp:prepend(lazypath)
-
+end vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
     { "nvim-telescope/telescope.nvim", version = "*", dependencies = { "nvim-lua/plenary.nvim" } },
     { "nvim-telescope/telescope-file-browser.nvim", dependencies = {
@@ -62,6 +60,9 @@ require("lazy").setup({
     { "nvim-treesitter/playground" },
     { "nvim-treesitter/nvim-treesitter-context" },
 
+    -- razor syntax highlighting
+    { "jlcrochet/vim-razor" },
+
     { "nvim-lualine/lualine.nvim", dependencies = { "kyazdani42/nvim-web-devicons" } },
     { "numToStr/Comment.nvim", opts = {} },
     { "lewis6991/gitsigns.nvim", opts = {} },
@@ -73,8 +74,27 @@ require("lazy").setup({
     -- color schemes
     { "rose-pine/neovim", name = "rose-pine" },
     { "folke/tokyonight.nvim" },
-    { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+    { "catppuccin/nvim", name = "catppuccin" },
+    { "decaycs/decay.nvim", name = "decay" },
+    { "dasupradyumna/midnight.nvim" },
+    { "nyoom-engineering/oxocarbon.nvim" },
+    { "bluz71/vim-moonfly-colors", name = "moonfly", lazy = false, priority = 1000 },
+    { "tjdevries/colorbuddy.nvim" },
+    { "nikolvs/vim-sunbather" },
+
+    -- vim be good
+    { "ThePrimeagen/vim-be-good" },
+
+    -- indenting
+    { "tpope/vim-sleuth" },
 
     -- tex live preview
     { "xuhdev/vim-latex-live-preview" },
+    { "lervag/vimtex" },
+
+    -- activity watch
+    { "ActivityWatch/aw-watcher-vim" },
+
+    -- copilot
+    { "github/copilot.vim" },
 })
