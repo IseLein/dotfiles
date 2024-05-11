@@ -1,5 +1,6 @@
 local cmp = require 'cmp'
 local luasnip = require 'luasnip'
+local lspkind = require 'lspkind'
 luasnip.config.setup {}
 
 cmp.setup {
@@ -8,7 +9,10 @@ cmp.setup {
             luasnip.lsp_expand(args.body)
         end,
     },
-    completion = { completeopt = 'menu,menuone,noinsert' },
+    completion = {
+        completeopt = 'menu,menuone,noinsert',
+        keyword_length = 3
+    },
     mapping = cmp.mapping.preset.insert {
         ['<C-n>'] = cmp.mapping.select_next_item(),
         ['<C-p>'] = cmp.mapping.select_prev_item(),
@@ -32,6 +36,30 @@ cmp.setup {
         { name = 'nvim_lsp' },
         { name = 'luasnip' },
         { name = 'path' },
+        -- { name = 'cmdline' },
+        { name = 'buffer' },
+    },
+    formatting = {
+        format = function(entry, vim_item)
+            local interm = lspkind.cmp_format({
+                mode = "symbol_text",
+                show_labelDetails = true,
+                maxwidth = 50,
+                ellipsis_char = '...',
+                menu = ({
+                    buffer = "[Buffer]",
+                    nvim_lsp = "[LSP]",
+                    luasnip = "[LuaSnip]",
+                    path = "[Path]",
+                    cmdline = "[Cmdline]",
+                }),
+            })(entry, vim_item)
+            if interm.menu then
+                local pattern = "(%[.-%])"
+                interm.menu = string.match(interm.menu, pattern)
+            end
+            return interm
+        end,
     },
 }
 
@@ -72,8 +100,17 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
 local servers = {
-    lua_ls = {},
-    clangd = {},
+    lua_ls = {
+        settings = {
+            diagnostics = { disable = { 'missing-fields' } },
+        },
+    },
+    clangd = {
+        cmd = {
+            'clangd',
+            '--offset-encoding=utf-16',
+        }
+    },
 }
 require('mason').setup()
 local ensure_installed = vim.tbl_keys(servers or {})

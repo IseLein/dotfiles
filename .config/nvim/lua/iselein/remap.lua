@@ -44,3 +44,13 @@ vim.keymap.set("n", "<leader>tff", "<cmd>NvimTreeFindFile<cr>",
 vim.keymap.set("n", "<leader>tc", "<cmd>NvimTreeCollapse<cr>",
     { silent = true, noremap = true }
 )
+
+-- bindings for undotree
+vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle,
+    { silent = true, noremap = true }
+)
+
+-- bindings for vim-fugitive
+vim.keymap.set("n", "<leader>gs", vim.cmd.Git,
+    { silent = true, noremap = true }
+)

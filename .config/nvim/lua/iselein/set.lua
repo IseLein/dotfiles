@@ -45,3 +45,5 @@ vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣', eol = '↴' }
 -- plugins
 vim.g.tex_flavor = "latex"
 vim.g.livepreview_previewer = "zathura"
+
+-- vim.api.nvim_set_hl(0, "LspReferenceText", {})

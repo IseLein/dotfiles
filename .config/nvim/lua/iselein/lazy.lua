@@ -56,22 +56,22 @@ require("lazy").setup({
             { 'folke/neodev.nvim', opts = {} },
         },
     },
-    {
-        'stevearc/conform.nvim',
-        opts = {
-            notify_on_error = false,
-            format_on_save = function(bufnr)
-                local disable_filetypes = { c = true, cpp = true }
-                return {
-                    timeout_ms = 500,
-                    lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
-                }
-            end,
-            formatters_by_ft = {
-                lua = { 'stylua' },
-            },
-        },
-    },
+    -- {
+    --     'stevearc/conform.nvim',
+    --     opts = {
+    --         notify_on_error = false,
+    --         format_on_save = function(bufnr)
+    --             local disable_filetypes = { c = true, cpp = true }
+    --             return {
+    --                 timeout_ms = 500,
+    --                 lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
+    --             }
+    --         end,
+    --         formatters_by_ft = {
+    --             lua = { 'stylua' },
+    --         },
+    --     },
+    -- },
     {
         'hrsh7th/nvim-cmp',
         -- event = 'InsertEnter',
@@ -98,6 +98,7 @@ require("lazy").setup({
             'hrsh7th/cmp-path',
             'hrsh7th/cmp-buffer',
             'hrsh7th/cmp-cmdline',
+            'onsails/lspkind.nvim',
         },
     },
     -- qol
@@ -118,7 +119,6 @@ require("lazy").setup({
 
     -- colors
     { 'nikolvs/vim-sunbather' },
-    { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
     {
         'echasnovski/mini.nvim',
@@ -149,8 +149,26 @@ require("lazy").setup({
     { "xuhdev/vim-latex-live-preview" },
     { "lervag/vimtex" },
 
-    -- copilot
     { "github/copilot.vim" },
+    { "ThePrimeagen/vim-be-good" },
+    { "mbbill/undotree" },
+    { "tpope/vim-fugitive" },
+    -- activity watch
+    { "ActivityWatch/aw-watcher-vim" },
 
+    { 'brenoprata10/nvim-highlight-colors' },
+
+    -- razor syntax highlighting
+    { "jlcrochet/vim-razor" },
+
+    -- hardtime
+    {
+        "m4xshen/hardtime.nvim",
+        dependencies = {
+            "MunifTanjim/nui.nvim",
+            "nvim-lua/plenary.nvim",
+        },
+        opts = {}
+    }
 
 })
