@@ -103,7 +103,6 @@ require("lazy").setup({
     },
     -- qol
     { 'tpope/vim-sleuth' },
-    { 'numToStr/Comment.nvim', opts = {} },
     {
         'lewis6991/gitsigns.nvim',
         opts = {
@@ -142,7 +141,10 @@ require("lazy").setup({
         dependencies = { "kyazdani42/nvim-web-devicons" },
         opts = { icons = true },
     },
-    { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
+    { "lukas-reineke/indent-blankline.nvim",
+        -- main = "ibl",
+        tag = "v2.20.8", opts = {}
+    },
 
 
     -- latex
@@ -153,8 +155,6 @@ require("lazy").setup({
     { "ThePrimeagen/vim-be-good" },
     { "mbbill/undotree" },
     { "tpope/vim-fugitive" },
-    -- activity watch
-    { "ActivityWatch/aw-watcher-vim" },
 
     { 'brenoprata10/nvim-highlight-colors' },
 

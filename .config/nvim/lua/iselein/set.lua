@@ -19,8 +19,9 @@ vim.opt.backup = false
 vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undofile = true
 
-vim.opt.hlsearch = false
 vim.opt.incsearch = true
+vim.opt.hlsearch = true
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 vim.opt.termguicolors = true
 
@@ -40,7 +41,8 @@ vim.cmd('filetype plugin on')
 vim.cmd('filetype indent on')
 
 vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣', eol = '↴' }
+-- vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣', eol = '↴' }
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
 -- plugins
 vim.g.tex_flavor = "latex"
