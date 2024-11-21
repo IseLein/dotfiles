@@ -36,7 +36,7 @@ cmp.setup {
         { name = 'nvim_lsp' },
         { name = 'luasnip' },
         { name = 'path' },
-        -- { name = 'cmdline' },
+        { name = 'cmdline' },
         { name = 'buffer' },
     },
     formatting = {
@@ -60,6 +60,8 @@ cmp.setup {
             end
             return interm
         end,
+        expandable_indicator = true,
+        fields = { "kind", "abbr", "menu" },
     },
 }
 
@@ -75,7 +77,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
         map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
         map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-        map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+        -- map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
         map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
         map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
         map('K', vim.lsp.buf.hover, 'Hover Documentation')
@@ -119,9 +121,24 @@ require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 require('mason-lspconfig').setup {
     handlers = {
         function(server_name)
+            if server_name == "tsserver" then
+                server_name = "ts_ls"
+            end
             local server = servers[server_name] or {}
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
         end,
     },
 }
+
+local signs = {
+    Error = "󰅙 ",
+    Warn = " ",
+    Hint = "󰌵 ",
+    Info = "󰋼 "
+}
+
+for type, icon in pairs(signs) do
+    local hl = "DiagnosticSign" .. type
+    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+end

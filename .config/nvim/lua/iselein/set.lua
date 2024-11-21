@@ -4,7 +4,7 @@ vim.opt.cul = true
 vim.opt.culopt = "number"
 
 vim.opt.nu = true
--- vim.opt.rnu = true
+vim.opt.rnu = true
 
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
@@ -41,7 +41,6 @@ vim.cmd('filetype plugin on')
 vim.cmd('filetype indent on')
 
 vim.opt.list = true
--- vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣', eol = '↴' }
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
 -- plugins

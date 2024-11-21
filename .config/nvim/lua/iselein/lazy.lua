@@ -103,35 +103,7 @@ require("lazy").setup({
     },
     -- qol
     { 'tpope/vim-sleuth' },
-    {
-        'lewis6991/gitsigns.nvim',
-        opts = {
-            signs = {
-                add = { text = '+' },
-                change = { text = '~' },
-                delete = { text = '_' },
-                topdelete = { text = '‾' },
-                changedelete = { text = '~' },
-            },
-        },
-    },
-
-    -- colors
-    { 'nikolvs/vim-sunbather' },
-
-    {
-        'echasnovski/mini.nvim',
-        config = function()
-            require('mini.ai').setup { n_lines = 500 }
-            require('mini.surround').setup()
-
-            local statusline = require 'mini.statusline'
-            statusline.setup { use_icons = true }
-            statusline.section_location = function()
-                return '%2l:%-2v'
-            end
-        end
-    },
+    { 'lewis6991/gitsigns.nvim', opts = {} },
     {
         'nvim-tree/nvim-tree.lua',
         dependencies = { 'kyazdani42/nvim-web-devicons' },
@@ -139,36 +111,58 @@ require("lazy").setup({
     {
         "folke/trouble.nvim",
         dependencies = { "kyazdani42/nvim-web-devicons" },
-        opts = { icons = true },
+        opts = {},
     },
-    { "lukas-reineke/indent-blankline.nvim",
-        -- main = "ibl",
-        tag = "v2.20.8", opts = {}
-    },
-
+    -- { "lukas-reineke/indent-blankline.nvim",
+    --     main = "ibl"
+    -- },
 
     -- latex
     { "xuhdev/vim-latex-live-preview" },
     { "lervag/vimtex" },
 
-    { "github/copilot.vim" },
+    -- { "github/copilot.vim" },
+    {
+        "supermaven-inc/supermaven-nvim",
+        config = function ()
+            require("supermaven-nvim").setup({})
+        end,
+    },
+
     { "ThePrimeagen/vim-be-good" },
     { "mbbill/undotree" },
     { "tpope/vim-fugitive" },
 
-    { 'brenoprata10/nvim-highlight-colors' },
+    { "brenoprata10/nvim-highlight-colors" },
 
-    -- razor syntax highlighting
-    { "jlcrochet/vim-razor" },
-
-    -- hardtime
+    { "slugbyte/lackluster.nvim" },
+    { "kdheepak/monochrome.nvim" },
     {
-        "m4xshen/hardtime.nvim",
-        dependencies = {
-            "MunifTanjim/nui.nvim",
-            "nvim-lua/plenary.nvim",
-        },
-        opts = {}
-    }
+        "ellisonleao/gruvbox.nvim",
+        opts = {
+            overrides = {
+                SignColumn = { bg = "bg" }
+            },
+            italic = {
+                strings = false,
+                emphasis = false,
+                comments = false,
+                operators = false,
+            },
+        }
+    },
+    { "p00f/alabaster.nvim" },
+    { "nuvic/flexoki-nvim", name = "flexoki" },
+    {
+        'nvim-lualine/lualine.nvim',
+        dependencies = { 'nvim-tree/nvim-web-devicons' },
+        opts = {
+            options = {
+                component_separators = { left = '|', right = '|'},
+                section_separators = { left = '', right = ''}
+            }
+        }
+    },
+    { "nvim-treesitter/nvim-treesitter-context", opts = {} },
 
 })
