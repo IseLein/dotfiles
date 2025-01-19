@@ -19,8 +19,7 @@ local keys = {
     {
         key = "h",
         mods = "LEADER",
-        action = wezterm.action.ActivatePaneDirection 'Left',
-    },
+        action = wezterm.action.ActivatePaneDirection 'Left', },
     {
         key = "l",
         mods = "LEADER",
@@ -69,8 +68,9 @@ end
 local config = {
     hide_tab_bar_if_only_one_tab = true,
     use_fancy_tab_bar = false,
-    font = wezterm.font("Berkeley Mono Variable", { weight = "Light" }),
-    -- font = wezterm.font("Iosevka Ishuz NoLig", { weight = "Light" }),
+    -- font = wezterm.font("Berkeley Mono Variable", { weight = "Light" }),
+    -- font = wezterm.font("TX-02"),
+    font = wezterm.font("Iosevka Ishuz", { weight = "Regular" }),
     font_size = 15,
     -- color_scheme = "Alabaster",
     color_scheme = "flexoki-light",

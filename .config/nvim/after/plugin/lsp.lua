@@ -36,7 +36,6 @@ cmp.setup {
         { name = 'nvim_lsp' },
         { name = 'luasnip' },
         { name = 'path' },
-        { name = 'cmdline' },
         { name = 'buffer' },
     },
     formatting = {
@@ -51,7 +50,6 @@ cmp.setup {
                     nvim_lsp = "[LSP]",
                     luasnip = "[LuaSnip]",
                     path = "[Path]",
-                    cmdline = "[Cmdline]",
                 }),
             })(entry, vim_item)
             if interm.menu then

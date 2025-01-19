@@ -1,5 +1,5 @@
-vim.opt.background = "light"
-vim.cmd.colorscheme('flexoki')
+vim.opt.background = "dark"
+vim.cmd.colorscheme('gruvbox')
 
 require('nvim-highlight-colors').setup {
     render = 'virtual',

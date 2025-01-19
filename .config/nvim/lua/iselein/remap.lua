@@ -61,3 +61,8 @@ vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle,
 vim.keymap.set("n", "<leader>gs", vim.cmd.Git,
     { silent = true, noremap = true }
 )
+
+-- bindings for supermaven
+vim.keymap.set("n", "<leader>mm", vim.cmd.SupermavenToggle,
+    { silent = true, noremap = true }
+)

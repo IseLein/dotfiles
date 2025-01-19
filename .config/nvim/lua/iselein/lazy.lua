@@ -133,6 +133,18 @@ require("lazy").setup({
     { "mbbill/undotree" },
     { "tpope/vim-fugitive" },
 
+    {
+        "NeogitOrg/neogit",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "sindrets/diffview.nvim",
+            "nvim-telescope/telescope.nvim",
+        },
+        opts = {
+            graph_style = "ascii",
+        }
+    },
+
     { "brenoprata10/nvim-highlight-colors" },
 
     { "slugbyte/lackluster.nvim" },
@@ -152,7 +164,15 @@ require("lazy").setup({
         }
     },
     { "p00f/alabaster.nvim" },
-    { "nuvic/flexoki-nvim", name = "flexoki" },
+    {
+        "nuvic/flexoki-nvim",
+        name = "flexoki",
+        opts = {
+            styles = {
+                bold = false,
+            },
+        },
+    },
     {
         'nvim-lualine/lualine.nvim',
         dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -164,5 +184,12 @@ require("lazy").setup({
         }
     },
     { "nvim-treesitter/nvim-treesitter-context", opts = {} },
+    {
+        "llm.nvim",
+        dir = vim.fn.stdpath("config") .. "/lua/llm",
+        config = function()
+            require("llm").setup()
+        end,
+    },
 
 })
