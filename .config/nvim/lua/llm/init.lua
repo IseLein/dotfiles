@@ -47,9 +47,9 @@ M.config = {
         },
         gemini = {
             url = "https://generativelanguage.googleapis.com/v1beta/models/",
-            model = "gemini-1.5-flash",
+            model = "gemini-2.0-flash",
             api_key_name = "GOOGLE_AI_API_KEY",
-            system_prompt = get_system_prompt("Gemini-1.5-Flash", "Google"),
+            system_prompt = get_system_prompt("Gemini-2.0-Flash", "Google"),
         }
     },
     default_llm_provider = "gemini",
