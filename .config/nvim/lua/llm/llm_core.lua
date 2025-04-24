@@ -60,7 +60,7 @@ function M.make_anthropic_spec_curl_args(opts, prompt, system_prompt)
         messages = { {  role = "user", content = prompt } },
         model = opts.model,
         stream = true,
-        max_tokens = 4096,
+        max_tokens = 128000,
         temperature = 0.8,
     }
     local args = { '-N', '-X', 'POST', '-H', 'Content-Type: application/json', '-d', vim.json.encode(data) }
@@ -69,6 +69,36 @@ function M.make_anthropic_spec_curl_args(opts, prompt, system_prompt)
         table.insert(args, 'x-api-key: ' .. api_key)
         table.insert(args, '-H')
         table.insert(args, 'anthropic-version: 2023-06-01')
+        table.insert(args, '-H')
+        table.insert(args, 'anthropic-beta: output-128k-2025-02-19')
+    end
+    table.insert(args, url)
+    return args
+end
+
+function M.make_anthropic_reason_spec_curl_args(opts, prompt, system_prompt)
+    local url = opts.url
+    local api_key = opts.api_key or get_api_key(opts.api_key_name)
+    local data = {
+        system = system_prompt,
+        messages = { {  role = "user", content = prompt } },
+        model = opts.model,
+        stream = true,
+        max_tokens = 128000,
+        temperature = 0.8,
+        thinking = {
+            type = "enabled",
+            budget_tokens = 32000
+        },
+    }
+    local args = { '-N', '-X', 'POST', '-H', 'Content-Type: application/json', '-d', vim.json.encode(data) }
+    if api_key then
+        table.insert(args, '-H')
+        table.insert(args, 'x-api-key: ' .. api_key)
+        table.insert(args, '-H')
+        table.insert(args, 'anthropic-version: 2023-06-01')
+        table.insert(args, '-H')
+        table.insert(args, 'anthropic-beta: output-128k-2025-02-19')
     end
     table.insert(args, url)
     return args
@@ -81,7 +111,7 @@ function M.make_deepseek_spec_curl_args(opts, prompt, system_prompt)
         model = opts.model,
         messages = { { role = "system", content = system_prompt }, {  role = "user", content = prompt } },
         stream = true,
-        max_tokens = 4096,
+        max_tokens = 8192,
         temperature = 0.8,
     }
     local args = { '-N', '-X', 'POST', '-H', 'Content-Type: application/json', '-d', vim.json.encode(data) }
@@ -126,7 +156,7 @@ function M.make_gemini_spec_curl_args(opts, prompt, system_prompt)
             }
         },
         generationConfig = {
-            maxOutputTokens = 4096,
+            maxOutputTokens = 8192,
             temperature = 0.8,
         }
     }
@@ -192,6 +222,39 @@ function M.handle_anthropic_spec_data(data_stream, event_state)
     if event_state == 'message_delta' then
         local json = vim.json.decode(data_stream)
         if json.usage and json.usage.output_tokens then
+            M.write_string_at_cursor('\n')
+            print(vim.g.llm_provider .. ' done')
+
+            if vim.g.show_llm_usage then
+                M.write_string_at_cursor('\n')
+                M.write_string_at_cursor('[[ Output Tokens: ' .. json.usage.output_tokens .. ' ]]')
+            end
+        end
+    end
+end
+
+function M.handle_anthropic_reason_spec_data(data_stream, event_state)
+    if event_state == 'content_block_delta' then
+        local json = vim.json.decode(data_stream)
+        if json.delta and json.delta.thinking then
+            if vim.g.tmp_anthropic_state ~= 'thinking' then
+                vim.g.tmp_anthropic_state = 'thinking'
+                M.write_string_at_cursor('<thinking>\n')
+            end
+            M.write_string_at_cursor(json.delta.thinking)
+        end
+        if json.delta and json.delta.text then
+            if vim.g.tmp_anthropic_state ~= 'text' then
+                vim.g.tmp_anthropic_state = 'text'
+                M.write_string_at_cursor('</thinking>\n\n')
+            end
+            M.write_string_at_cursor(json.delta.text)
+        end
+    end
+    if event_state == 'message_delta' then
+        local json = vim.json.decode(data_stream)
+        if json.usage and json.usage.output_tokens then
+            vim.g.tmp_anthropic_state = nil
             M.write_string_at_cursor('\n')
             print(vim.g.llm_provider .. ' done')
 
@@ -336,6 +399,7 @@ end
 
 M.make_curl_args_fn = {
     anthropic = M.make_anthropic_spec_curl_args,
+    anthropic_reason = M.make_anthropic_reason_spec_curl_args,
     deepseek = M.make_deepseek_spec_curl_args,
     deepinfra = M.make_deepseek_spec_curl_args,
     openai = M.make_openai_spec_curl_args,
@@ -343,6 +407,7 @@ M.make_curl_args_fn = {
 }
 M.handle_data_fn = {
     anthropic = M.handle_anthropic_spec_data,
+    anthropic_reason = M.handle_anthropic_reason_spec_data,
     deepseek = M.handle_deepseek_spec_data,
     deepinfra = M.handle_deepinfra_spec_data,
     openai = M.handle_openai_spec_data,

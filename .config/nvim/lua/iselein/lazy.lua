@@ -185,6 +185,12 @@ require("lazy").setup({
     },
     { "nvim-treesitter/nvim-treesitter-context", opts = {} },
     {
+        "nvzone/typr",
+        dependencies = "nvzone/volt",
+        opts = {},
+        cmd = { "Typr", "TyprStats" },
+    },
+    {
         "llm.nvim",
         dir = vim.fn.stdpath("config") .. "/lua/llm",
         config = function()

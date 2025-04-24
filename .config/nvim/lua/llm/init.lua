@@ -23,7 +23,13 @@ M.config = {
     llm_opts = {
         anthropic = {
             url = "https://api.anthropic.com/v1/messages",
-            model = "claude-3-5-sonnet-20241022",
+            model = "claude-3-7-sonnet-20250219",
+            api_key_name = "ANTHROPIC_API_KEY",
+            system_prompt = get_system_prompt("Claude", "Anthropic"),
+        },
+        anthropic_reason = {
+            url = "https://api.anthropic.com/v1/messages",
+            model = "claude-3-7-sonnet-20250219",
             api_key_name = "ANTHROPIC_API_KEY",
             system_prompt = get_system_prompt("Claude", "Anthropic"),
         },
@@ -97,7 +103,7 @@ function M.send_request(replace)
 end
 
 function M.toggle_llm_provider()
-    local providers = { "anthropic", "openai", "gemini", "deepseek", "deepinfra" }
+    local providers = { "anthropic", "anthropic_reason", "openai", "gemini", "deepseek", "deepinfra" }
     local current_index
 
     for i, v in ipairs(providers) do
@@ -120,6 +126,7 @@ function M.setup(opts)
 
     vim.g.llm_provider = M.config.default_llm_provider
     vim.g.show_token_count = false
+    vim.g.tmp_anthropic_state = nil
 
     vim.keymap.set({ 'n', 'v' }, M.config.keymaps.open_chat,
         M.open_chat,
